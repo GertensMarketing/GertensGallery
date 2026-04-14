@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gertens Gallery</title>
+  <!-- Favicon: set dynamically from CSV B7 -->
+  <link rel="icon" id="favicon" type="image/png" href="">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
@@ -193,7 +195,7 @@
 <body>
 
   <header id="site-header">
-    <img id="nav-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white.png" alt="Gertens Gallery" />
+    <img id="nav-logo-img" src="" alt="Gertens Gallery" style="height:40px;width:auto;object-fit:contain;display:block;" />
     <div id="nav-logo-text">Gertens <span>Gallery</span></div>
     <nav>
       <a href="#about">About</a>
@@ -393,12 +395,26 @@
       try {
         const raw  = await fetchText(CSV_HOME);
 
-        // ── LOGO from B6 ──
-        // B6 in spreadsheet = row 6, column B
-        // In the raw CSV grid (0-indexed): grid[5][1]
-        // (row index 5 = 6th row, column index 1 = column B)
         const grid = parseCSVGrid(raw);
-        const logoUrl = grid[5] && grid[5][1] ? grid[5][1] : '/images/GertensGallery_white.png';
+
+        // ── B6: Hero logo (hardcoded in HTML, no JS needed) ──────
+        // src already set directly on #hero-logo-img and #footer-logo-img
+
+        // ── B7: Favicon ──────────────────────────────────────────
+        // Spreadsheet row 7, column B = grid[6][1] (0-indexed)
+        const faviconUrl = grid[6] && grid[6][1] ? grid[6][1].trim() : '';
+        if (faviconUrl) {
+          const faviconEl = document.getElementById('favicon');
+          if (faviconEl) faviconEl.href = faviconUrl;
+        }
+
+        // ── B9: Navigation bar logo ───────────────────────────────
+        // Spreadsheet row 9, column B = grid[8][1] (0-indexed)
+        const navLogoUrl = grid[8] && grid[8][1] ? grid[8][1].trim() : '';
+        if (navLogoUrl) {
+          const navImg = document.getElementById('nav-logo-img');
+          if (navImg) navImg.src = navLogoUrl;
+        }
 
 
         // ── Other content via key/value pairs ──
