@@ -806,20 +806,35 @@
                     document.getElementById('about-section').style.setProperty('--about-bg', `url('${bgUrl}')`);
                 }
 
-                const logoKey = Object.keys(dict).find(k => k.includes('logo'));
-                if (logoKey && dict[logoKey]) {
-                    const logoUrl = getDirectImageUrl(dict[logoKey]);
-                    
-                    // Small logo for the Nav and Footer
-                    const logoHtmlSmall = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 35px; object-fit: contain;">`;
-                    // Larger logo for the center of the Hero section
+                // Apply Main Logo
+                let primaryLogoRaw = '';
+                const primaryLogoKey = Object.keys(dict).find(k => k === 'logo' || (k.includes('logo') && !k.includes('scroll') && !k.includes('nav')));
+                if (primaryLogoKey && dict[primaryLogoKey]) {
+                    primaryLogoRaw = dict[primaryLogoKey];
+                }
+                
+                if (primaryLogoRaw) {
+                    const logoUrl = getDirectImageUrl(primaryLogoRaw);
                     const logoHtmlLarge = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 250px; max-width: 80vw; object-fit: contain;">`;
                     const logoHtmlFooter = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 50px; object-fit: contain;">`;
                     
-                    document.getElementById('nav-logo-container').innerHTML = logoHtmlSmall;
                     const heroLogoContainer = document.getElementById('hero-center-logo-container');
                     if(heroLogoContainer) heroLogoContainer.innerHTML = logoHtmlLarge;
                     document.getElementById('footer-logo-container').innerHTML = logoHtmlFooter;
+                }
+
+                // Apply Nav/Scroll Logo (Strictly pulls from Cell B9)
+                let scrollLogoRaw = '';
+                if (contentData.length >= 9 && contentData[8][1] && contentData[8][1].trim() !== '') {
+                    scrollLogoRaw = contentData[8][1].trim(); // Cell B9 explicitly
+                } else {
+                    scrollLogoRaw = primaryLogoRaw; // Fallback to main logo if missing
+                }
+
+                if (scrollLogoRaw) {
+                    const scrollLogoUrl = getDirectImageUrl(scrollLogoRaw);
+                    const logoHtmlSmall = `<img src="${scrollLogoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 35px; object-fit: contain;">`;
+                    document.getElementById('nav-logo-container').innerHTML = logoHtmlSmall;
                 }
 
                 // Apply Favicon (Pulls from Cell B7 or Key Match)
