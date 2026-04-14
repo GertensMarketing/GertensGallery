@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gertens Gallery</title>
+  <title>Gertens Gallery: A Hardscape Showroom</title>
   <!-- Favicon: set dynamically from CSV B7 -->
-  <link rel="icon" id="favicon" type="image/png" href="">
+  <link rel="icon" id="favicon" type="image/png" href="https://gertensgallery.netlify.app/images/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
@@ -46,7 +46,7 @@
     /* NAV */
     #site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 18px clamp(24px, 6vw, 80px); display: flex; align-items: center; justify-content: space-between; transition: background 0.5s ease, box-shadow 0.5s ease; }
     #site-header.scrolled { background: rgba(74,98,117,0.96); box-shadow: 0 1px 0 rgba(214,205,149,0.15); backdrop-filter: blur(12px); }
-    /* Nav uses the same logo image as the hero */
+    /* Nav logo — set from CSV B9, falls back to hero logo if CSV unavailable */
     #nav-logo-img { height: 38px; width: auto; object-fit: contain; display: block; }
     #nav-logo-text { display: none; }
     #nav-logo-text span { font-weight: 300; font-style: italic; color: var(--color-gold); }
@@ -195,7 +195,7 @@
 <body>
 
   <header id="site-header">
-    <img id="nav-logo-img" src="" alt="Gertens Gallery" style="height:40px;width:auto;object-fit:contain;display:block;" />
+    <img id="nav-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white-top.png" alt="Gertens Gallery" style="height:40px;width:auto;object-fit:contain;display:block;" />
     <div id="nav-logo-text">Gertens <span>Gallery</span></div>
     <nav>
       <a href="#about">About</a>
@@ -239,7 +239,7 @@
           <div class="gold-rule"></div>
           <h2 class="section-title" id="about-title">Where Hardscape Meets Artistry</h2>
         </div>
-        <p class="section-body reveal reveal-delay-1" id="about-body">Gertens Gallery is our newest destination for landscape and hardscape inspiration — a curated, design-forward showroom where you can explore our full range of pavers, bricks, retaining wall systems, pool deck materials, and natural stone in an immersive, hands-on setting.<br><br>From concrete and porcelain to clay and natural stone, every material has been thoughtfully selected for beauty, durability, and versatility.</p>
+        <p class="section-body reveal reveal-delay-1" id="about-body">Gertens Gallery showcases a curated selection of natural stone, porcelain, and concrete products designed for exceptional landscapes.<br><br>Inspired by the world's greatest artist—Mother Nature—our collection highlights materials that blend beauty, durability, and timeless design.<br><br>Located in the heart of the Twin Cities' Golden Triangle in Eden Prairie, Gertens Gallery offers a private showroom experience by appointment.<br><br>Our team of industry mavens specializes in guiding contractors, designers, and homeowners through the landscape product selection process with expertise and intention.</p>
         <div class="about-stat reveal reveal-delay-2">
           <div class="about-stat-num" id="stat-num">50+</div>
           <div class="about-stat-label" id="stat-label">Curated Material Collections on Display</div>
@@ -306,11 +306,11 @@
       <p class="section-label">Find Us</p>
       <div class="gold-rule" style="margin:0 auto 2rem;"></div>
       <h2 class="section-title">Our Location</h2>
-      <p class="section-body" style="margin:0 auto;" id="location-address">Gertens Gallery — Loading address...</p>
+      <p class="section-body" style="margin:0 auto;" id="location-address">9715 Valley View Rd, Eden Prairie, Minnesota</p>
     </div>
     <!-- Replace the iframe src with your actual Google Maps embed URL -->
     <div class="map-wrapper reveal">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2823.7734767023!2d-93.18601652342476!3d44.97403017107208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x52b32b6f13b7cefd%3A0x5e50bfea8a2f6978!2sGertens%20Garden%20Center!5e0!3m2!1sen!2sus!4v1712000000000!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Gertens Gallery Location"></iframe>
+      <iframe src="https://maps.google.com/maps?q=9715+Valley+View+Rd,+Eden+Prairie,+Minnesota&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Gertens Gallery Location"></iframe>
     </div>
   </section>
 
@@ -417,23 +417,52 @@
         }
 
 
-        // ── Other content via key/value pairs ──
+        // ── Parse CSV using correct column names: "Website Section" / "Info or Link" ──
+        // Build a lookup: { "Address:": "9715 Valley View...", "Logo": "https://..." }
         const rows = parseCSV(raw);
         const d = {};
         rows.forEach(r => {
-          const k = r.key || r.Key || '';
-          const v = r.value || r.Value || '';
+          // Column A = "Website Section", Column B = "Info or Link"
+          const k = r['Website Section'] || r['website section'] || '';
+          const v = r['Info or Link']    || r['info or link']    || '';
           if (k) d[k] = v;
         });
+
+        // Helper setters — only override if CSV value exists
         const set  = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
         const setH = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML   = val; };
-        set('hero-eyebrow',    d.hero_eyebrow);
-        set('hero-headline',   d.hero_headline);
-        set('about-title',     d.about_title);
-        setH('about-body',     d.about_body);
-        set('stat-num',        d.stat_num);
-        set('stat-label',      d.stat_label);
-        set('location-address',d.address);
+
+        // Content fields
+        if (d['Address:'])              set('location-address', d['Address:']);
+        if (d['About Us'])              setH('about-body', d['About Us'].replace(/\n/g, '<br><br>'));
+        if (d['Page Title'])            document.title = d['Page Title'];
+
+        // Images — override hardcoded src only if CSV value differs
+        if (d['Navigation logo']) {
+          const navImg = document.getElementById('nav-logo-img');
+          if (navImg) navImg.src = d['Navigation logo'];
+        }
+        if (d['Logo']) {
+          const heroImg   = document.getElementById('hero-logo-img');
+          const footerImg = document.getElementById('footer-logo-img');
+          if (heroImg)   heroImg.src   = d['Logo'];
+          if (footerImg) footerImg.src = d['Logo'];
+        }
+        if (d['Favicon']) {
+          const fav = document.getElementById('favicon');
+          if (fav) fav.href = d['Favicon'];
+        }
+        if (d['About Us Background']) {
+          const aboutImg = document.getElementById('about-img-el');
+          if (aboutImg) aboutImg.src = d['About Us Background'];
+        }
+        if (d['Google Maps Link']) {
+          const mapFrame = document.querySelector('.map-wrapper iframe');
+          if (mapFrame) {
+            const addr = d['Address:'] || '9715 Valley View Rd, Eden Prairie, Minnesota';
+            mapFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(addr) + '&output=embed';
+          }
+        }
         set('footer-copy',     d.footer_copy);
       } catch (err) {
         console.warn('Homepage CSV failed — defaults shown.', err);
