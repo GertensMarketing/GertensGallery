@@ -13,17 +13,18 @@
     <style>
         /* --- Strict Color Palette & Variables --- */
         :root {
-            --primary: #4a6275;      /* Slate Blue */
-            --bg: #f0efeb;           /* Off-white */
-            --text-sec: #756f6a;     /* Warm Grey */
+            --primary: #4a6275;      /* Slate Blue - Used as Dark Background */
+            --bg: #f0efeb;           /* Off-white - Used for Primary Text */
+            --text-sec: #756f6a;     /* Warm Grey - Used for dark subtle text */
             --accent: #d6cd95;       /* Warm Gold */
-            --highlight: #79b6d8;    /* Light Blue */
+            --highlight: #79b6d8;    /* Light Blue - Used for Secondary Text/Links */
             
-            --font-heading: 'Playfair Display', serif;
+            --font-heading: 'Inter', sans-serif; /* Swapped to Inter for RR feel */
+            --font-serif: 'Playfair Display', serif;
             --font-body: 'Inter', sans-serif;
             
             --spacing-section: 8rem;
-            --container-width: 1300px;
+            --container-width: 1400px;
         }
 
         /* --- Global Reset & Base Styles --- */
@@ -38,31 +39,31 @@
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--primary);
+            /* Inverted to dark theme using your palette */
+            background-color: var(--primary);
+            color: var(--bg);
             font-family: var(--font-body);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-            position: relative;
-        }
-
-        /* --- Subtle Texture Overlay --- */
-        /* This creates a high-end matte paper/stone texture over the whole site */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.05;
-            background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
         }
 
         h1, h2, h3, h4 {
             font-family: var(--font-heading);
-            font-weight: 400;
-            line-height: 1.1;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            line-height: 1.3;
+        }
+        
+        a {
+            color: var(--bg);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--highlight);
         }
 
         .container {
@@ -76,30 +77,20 @@
             padding: var(--spacing-section) 0;
             position: relative;
         }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
         /* --- High-End Reveal Animations --- */
-        .reveal-mask {
-            overflow: hidden;
-            display: inline-block;
-            vertical-align: top;
-        }
-
-        .reveal-mask > * {
-            display: inline-block;
-            transform: translateY(100%);
-            opacity: 0;
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
-        }
-
-        .in-view .reveal-mask > * {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
         .fade-up {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(30px);
+            transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .in-view.fade-up, .in-view .fade-up {
@@ -111,364 +102,355 @@
         .delay-2 { transition-delay: 0.2s; }
         .delay-3 { transition-delay: 0.3s; }
 
-        /* --- Dynamic Hero Section --- */
+        /* --- Transparent Top Navigation --- */
+        .top-nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid rgba(240, 239, 235, 0.2);
+        }
+
+        .nav-item {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            color: var(--bg);
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover {
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .nav-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-center svg {
+            height: 100%;
+            width: auto;
+            fill: var(--bg);
+        }
+        
+        @media (max-width: 768px) {
+            .top-nav { padding: 1.2rem 1.5rem; }
+            .nav-item span { display: none; } /* Hide text on mobile, keep icons */
+            .nav-center { height: 35px; }
+        }
+
+        /* --- Cinematic Hero Section --- */
         .hero {
             position: relative;
             height: 100vh;
-            min-height: 800px;
-            background-color: var(--primary);
+            min-height: 600px;
+            background-color: var(--primary); /* Fallback */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            overflow: hidden;
+            align-items: center;
+            text-align: center;
             color: var(--bg);
+            transition: background-image 1s ease;
         }
 
-        .hero-logo-wrapper {
+        /* Dark overlay to make text pop over the image */
+        .hero::before {
+            content: '';
             position: absolute;
-            top: 3rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-
-        .hero-logo-wrapper img, .hero-logo-wrapper svg {
-            max-height: 80px;
-            max-width: 300px;
-            object-fit: contain;
-            fill: var(--bg);
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(74, 98, 117, 0.3) 0%, rgba(74, 98, 117, 0.7) 100%);
+            z-index: 1;
         }
 
         .hero-content {
             position: relative;
-            z-index: 10;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
+            z-index: 2;
+            max-width: 1000px;
             padding: 0 2rem;
-            pointer-events: none; /* Let clicks pass through to background if needed */
+            margin-top: 5rem; /* Offset for nav */
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 7vw, 6rem);
-            color: var(--bg);
+            font-size: clamp(1.8rem, 4vw, 3.5rem);
             margin-bottom: 1.5rem;
-            letter-spacing: -0.03em;
+            font-weight: 400;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
         .hero p {
-            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: clamp(1rem, 2vw, 1.25rem);
             color: var(--accent);
-            font-weight: 300;
-            max-width: 600px;
-            margin: 0 auto;
+            letter-spacing: 0.05em;
         }
 
-        /* Floating Parallax Images Background */
-        .hero-parallax-container {
-            position: absolute;
-            inset: -10%; /* Overbleed for parallax movement */
-            z-index: 1;
-            pointer-events: none;
-            overflow: hidden;
+        /* --- Explore Further (Gallery) Section --- */
+        .explore-section {
+            background-color: var(--primary);
+            border-bottom: 1px solid rgba(240, 239, 235, 0.1);
+        }
+        
+        .section-header h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-header p {
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--highlight);
         }
 
-        .parallax-img-wrapper {
-            position: absolute;
-            overflow: hidden;
-            border-radius: 2px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            opacity: 0; /* Hidden until loaded */
-            transition: opacity 1s ease;
-        }
-
-        .parallax-img-wrapper.loaded {
-            opacity: 0.6; /* Semi-transparent against the primary color */
-        }
-
-        .parallax-img-wrapper img {
+        /* --- Sliding Gallery Styles --- */
+        .slider-wrapper {
+            position: relative;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(20%) brightness(0.8);
-        }
-
-        /* Specific positions for the floating hero images */
-        #p-img-1 { top: 15%; left: 5%; width: 25vw; height: 35vh; }
-        #p-img-2 { top: 40%; right: 5%; width: 30vw; height: 45vh; }
-        #p-img-3 { bottom: -5%; left: 20%; width: 35vw; height: 30vh; }
-
-        /* --- About Section (Asymmetric) --- */
-        .about-section {
-            background-color: var(--bg);
-        }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            margin-top: 2rem;
+            display: flex;
             align-items: center;
         }
 
-        .about-text-container h2 {
-            font-size: clamp(2.5rem, 4vw, 3.5rem);
-            color: var(--primary);
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        /* Decorative Gold Accent Line */
-        .about-text-container h2::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 2px;
-            background-color: var(--accent);
-            margin-top: 1rem;
-        }
-
-        .about-text-container p {
-            font-size: 1.25rem;
-            color: var(--text-sec);
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .about-image-container {
-            position: relative;
-            padding-left: 2rem;
-            padding-bottom: 2rem;
-        }
-
-        /* The architectural overlapping box effect */
-        .about-image-container::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 80%;
-            height: 80%;
-            background-color: var(--accent);
-            z-index: 0;
-            opacity: 0.3;
-        }
-
-        .about-image-container img {
-            position: relative;
-            z-index: 1;
+        .slider-viewport {
             width: 100%;
-            height: auto;
-            aspect-ratio: 4/5;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Hide native scrollbar for a clean luxury look */
+        .slider-viewport::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slider-track {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem 0;
+        }
+
+        .explore-item {
+            flex: 0 0 45%; /* Shows ~2 cards at a time on desktop */
+            scroll-snap-align: center;
+            cursor: pointer;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 40%;
+            transform: translateY(-50%);
+            background: rgba(74, 98, 117, 0.85); /* Slightly transparent primary color */
+            border: 1px solid rgba(240, 239, 235, 0.2);
+            color: var(--bg);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+            backdrop-filter: blur(8px);
+        }
+
+        .slider-btn:hover {
+            background: var(--bg);
+            color: var(--primary);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        /* Position the arrows outside or hugging the edges */
+        .slider-btn.prev { left: -1.5rem; }
+        .slider-btn.next { right: -1.5rem; }
+
+        @media (max-width: 1500px) {
+            .slider-btn.prev { left: 1rem; }
+            .slider-btn.next { right: 1rem; }
+        }
+
+        .explore-img-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            background-color: rgba(240, 239, 235, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .explore-img-wrapper img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-radius: 2px;
-            box-shadow: 0 15px 40px rgba(74, 98, 117, 0.1);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+            filter: grayscale(20%) brightness(0.85);
+        }
+
+        .explore-item:hover .explore-img-wrapper img {
+            transform: scale(1.03);
+            filter: grayscale(0%) brightness(1);
+        }
+
+        .explore-text h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--bg);
+        }
+
+        .explore-text p {
+            font-size: 0.9rem;
+            color: var(--highlight);
+            line-height: 1.5;
+            font-weight: 300;
         }
 
         @media (max-width: 900px) {
-            .about-grid { grid-template-columns: 1fr; }
-            .about-image-container { order: -1; padding: 0 0 2rem 2rem; }
-            .about-image-container::before { left: auto; right: 0; }
+            .explore-item { flex: 0 0 85%; } /* Shows 1 card prominently on mobile */
+            .explore-img-wrapper { aspect-ratio: 4 / 3; }
         }
 
-        /* --- Masonry Gallery Section --- */
-        .gallery-section {
-            background-color: #e8e6df; /* Slightly darker to contrast with sections */
-            padding-top: 6rem;
-            padding-bottom: 6rem;
-        }
-
-        .gallery-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 4rem;
-        }
-
-        .gallery-header h2 {
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            color: var(--primary);
-            max-width: 500px;
-        }
-
-        .gallery-header p {
-            color: var(--text-sec);
-            font-style: italic;
-        }
-
-        .masonry-grid {
-            columns: 3 300px;
-            column-gap: 2rem;
-        }
-
-        .masonry-item {
-            break-inside: avoid;
-            margin-bottom: 2rem;
-            position: relative;
-            cursor: pointer;
-            overflow: hidden;
-            border-radius: 2px;
-        }
-
-        .masonry-item img {
-            width: 100%;
-            display: block;
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
-            filter: grayscale(10%) brightness(0.95);
-        }
-
-        .masonry-item:hover img {
-            transform: scale(1.05);
-            filter: grayscale(0%) brightness(1.05);
-        }
-
-        /* --- Dual Section: Location & Hours --- */
+        /* --- Info & About Section (RR Style) --- */
         .info-section {
-            background-color: var(--bg);
-            padding: var(--spacing-section) 0;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
         }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 0;
-            background-color: #fff;
-            box-shadow: 0 20px 60px rgba(74, 98, 117, 0.08);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .hours-panel {
-            padding: 4rem;
-            background-color: var(--primary);
-            color: var(--bg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .hours-panel h2 {
-            font-size: 2.5rem;
+        
+        .info-section p {
+            font-size: 1.1rem;
+            color: var(--highlight);
             margin-bottom: 2rem;
-            color: var(--accent);
+            font-weight: 300;
         }
-
+        
         .hours-table {
             width: 100%;
+            max-width: 500px;
+            margin: 0 auto 4rem auto;
             border-collapse: collapse;
         }
 
-        .hours-table tr {
-            border-bottom: 1px solid rgba(240, 239, 235, 0.1);
-        }
-
         .hours-table td {
-            padding: 1.2rem 0;
-            font-size: 1.1rem;
-            color: rgba(240, 239, 235, 0.8);
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(240, 239, 235, 0.1);
+            color: var(--bg);
         }
 
         .hours-table td:last-child {
             text-align: right;
-            font-weight: 500;
-            color: var(--bg);
+            color: var(--accent);
         }
 
-        .map-panel {
-            position: relative;
-            min-height: 400px;
-            filter: grayscale(70%) contrast(110%) sepia(10%) hue-rotate(180deg); /* Stylizes map to match palette */
-            transition: filter 0.5s ease;
+        .map-container {
+            width: 100%;
+            height: 450px;
+            filter: grayscale(100%) invert(90%) contrast(80%) hue-rotate(180deg);
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+        }
+        
+        .map-container:hover {
+            opacity: 1;
         }
 
-        .map-panel:hover {
-            filter: grayscale(0%) contrast(100%);
-        }
-
-        .map-panel iframe {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; border: 0;
-        }
-
-        @media (max-width: 900px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .hours-panel { padding: 3rem 2rem; }
-            .map-panel { height: 400px; }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
         /* --- Appointment Section --- */
         .appointment-section {
-            background-color: var(--bg);
             text-align: center;
-            padding-bottom: var(--spacing-section);
-        }
-
-        .appointment-header {
-            margin-bottom: 3rem;
-        }
-
-        .appointment-header h2 {
-            font-size: clamp(2.5rem, 4vw, 3.5rem);
-            color: var(--primary);
-            margin-bottom: 1rem;
+            border-top: 1px solid rgba(240, 239, 235, 0.1);
         }
 
         .calendly-placeholder {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-            border: 1px dashed rgba(74, 98, 117, 0.3);
-            background-color: transparent;
-            border-radius: 4px;
-            padding: 5rem 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-sec);
+            border: 1px solid rgba(240, 239, 235, 0.2);
+            padding: 6rem 2rem;
+            color: var(--highlight);
+            font-family: var(--font-serif);
             font-style: italic;
-            transition: background-color 0.3s;
         }
 
-        .calendly-placeholder:hover {
-            background-color: rgba(74, 98, 117, 0.02);
-        }
-
-        /* --- Footer --- */
+        /* --- Minimal Footer --- */
         footer {
-            background-color: var(--primary);
-            color: var(--bg);
-            padding: 5rem 0 3rem 0;
+            padding: 4rem 0;
             text-align: center;
-            border-top: 4px solid var(--accent);
+            border-top: 1px solid rgba(240, 239, 235, 0.1);
         }
 
         .footer-logo-container {
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             display: flex;
             justify-content: center;
         }
 
         .footer-logo-container img, .footer-logo-container svg {
-            max-width: 250px;
-            max-height: 80px;
+            max-width: 200px;
+            max-height: 50px;
             fill: var(--bg);
         }
 
-        .footer-text {
-            color: var(--accent);
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 3rem;
-            font-family: var(--font-body);
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
         }
 
-        /* --- Lightbox --- */
+        .footer-links a {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--highlight);
+        }
+
+        .footer-text {
+            color: rgba(240, 239, 235, 0.4);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* --- Lightbox (Remains mostly unchanged but stylized darker) --- */
         .lightbox {
             position: fixed;
             inset: 0;
-            background-color: rgba(74, 98, 117, 0.98);
+            /* Extra dark variant of your primary color for maximum contrast */
+            background-color: rgba(30, 40, 50, 0.98); 
             z-index: 10000;
             display: flex;
             align-items: center;
@@ -478,166 +460,106 @@
             transition: opacity 0.5s ease;
         }
 
-        .lightbox.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .lightbox-content {
-            position: relative;
-            width: 95%;
-            max-width: 1400px;
-            height: 90vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .lightbox-img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.4);
-            border-radius: 2px;
-            transform: scale(0.95);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .lightbox.active .lightbox-img {
-            transform: scale(1);
-        }
-
-        .lightbox-close, .lightbox-nav {
-            position: absolute;
-            background: none;
-            border: none;
-            color: var(--bg);
-            cursor: pointer;
-            transition: color 0.3s, transform 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-        }
-
-        .lightbox-close {
-            top: -2rem;
-            right: 0;
-            font-size: 3.5rem;
-            line-height: 1;
-            font-weight: 300;
-        }
-
-        .lightbox-nav {
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(240, 239, 235, 0.05);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 1.5rem;
-            backdrop-filter: blur(4px);
-        }
-        
-        .lightbox-nav:hover, .lightbox-close:hover {
-            color: var(--accent);
-            background-color: rgba(240, 239, 235, 0.15);
-        }
-        .lightbox-close:hover { background-color: transparent; }
-
+        .lightbox.active { opacity: 1; pointer-events: auto; }
+        .lightbox-content { position: relative; width: 95%; max-width: 1400px; height: 90vh; display: flex; align-items: center; justify-content: center; }
+        .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.98); transition: transform 0.5s ease; }
+        .lightbox.active .lightbox-img { transform: scale(1); }
+        .lightbox-close, .lightbox-nav { position: absolute; background: none; border: none; color: var(--bg); cursor: pointer; transition: color 0.3s; z-index: 2; display: flex; align-items: center; justify-content: center; }
+        .lightbox-close { top: -1rem; right: 0; font-size: 3rem; font-weight: 300; }
+        .lightbox-nav { top: 50%; transform: translateY(-50%); width: 60px; height: 60px; }
+        .lightbox-nav:hover, .lightbox-close:hover { color: var(--accent); }
         .lightbox-prev { left: -1rem; }
         .lightbox-next { right: -1rem; }
-
-        @media (max-width: 768px) {
-            .lightbox-prev { left: 0; }
-            .lightbox-next { right: 0; }
-            .lightbox-close { top: -3rem; right: 0; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="hero-logo-wrapper" id="hero-logo-container">
+    <!-- Transparent Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            <span>Menu</span>
+        </div>
+        
+        <div class="nav-center" id="nav-logo-container">
             <!-- Fallback text/SVG logo if CSV empty -->
             <svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-                <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" font-family="'Playfair Display', serif" font-size="52" font-style="italic" letter-spacing="2">Gertens Gallery</text>
-                <text x="50%" y="95%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="12" font-weight="300" letter-spacing="6">SHOWROOM</text>
+                <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="32" font-weight="300" letter-spacing="8">GERTENS GALLERY</text>
             </svg>
         </div>
+        
+        <a href="#appointment" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <span>Make an Appointment</span>
+        </a>
+    </nav>
 
-        <div class="hero-parallax-container" id="hero-parallax">
-            <!-- These placeholders will be filled with CSV images and animated by JS -->
-            <div class="parallax-img-wrapper" id="p-img-1" data-speed="-0.15"><img src="" alt="" referrerpolicy="no-referrer"></div>
-            <div class="parallax-img-wrapper" id="p-img-2" data-speed="0.2"><img src="" alt="" referrerpolicy="no-referrer"></div>
-            <div class="parallax-img-wrapper" id="p-img-3" data-speed="-0.1"><img src="" alt="" referrerpolicy="no-referrer"></div>
-        </div>
-
-        <div class="hero-content">
-            <h1 class="reveal-mask"><span id="hero-headline">[Headline Loading]</span></h1>
-            <div class="fade-up delay-2">
-                <p id="hero-subheadline">[Subheadline Loading]</p>
-            </div>
+    <!-- Cinematic Hero Section -->
+    <header class="hero" id="hero-section">
+        <div class="hero-content fade-up">
+            <h1 id="hero-headline">[Headline Loading]</h1>
+            <p id="hero-subheadline">[Subheadline Loading]</p>
         </div>
     </header>
 
-    <!-- About Section -->
-    <section class="section about-section">
-        <div class="container about-grid">
-            <div class="about-text-container">
-                <h2 class="reveal-mask"><span id="about-title">The Gallery Experience</span></h2>
-                <div id="about-text" class="fade-up delay-1">
-                    <p>Loading gallery details...</p>
-                </div>
+    <!-- Explore Further (Gallery) -->
+    <section class="section explore-section">
+        <div class="container">
+            <div class="section-header fade-up">
+                <h2>Explore Further</h2>
+                <p>Take a Look Inside the Gallery</p>
             </div>
-            <div class="about-image-container fade-up delay-2">
-                <!-- This image will be grabbed from the gallery CSV dynamically to represent the 'About' section -->
-                <img id="about-featured-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Gallery Interior" referrerpolicy="no-referrer">
+            
+            <div class="slider-wrapper fade-up delay-1">
+                <button class="slider-btn prev" id="slider-prev">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                
+                <div class="slider-viewport" id="slider-viewport">
+                    <div class="slider-track" id="gallery-track">
+                        <!-- Sliding gallery cards injected here -->
+                    </div>
+                </div>
+                
+                <button class="slider-btn next" id="slider-next">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Masonry Gallery Section -->
-    <section class="section gallery-section">
+    <!-- About & Info Section -->
+    <section class="section info-section fade-up">
         <div class="container">
-            <div class="gallery-header">
-                <h2 class="reveal-mask"><span>Curated Collections & Spaces</span></h2>
-                <p class="fade-up delay-1">Click any image to expand</p>
+            <div class="section-header">
+                <h2 id="about-title">The Gallery Experience</h2>
             </div>
-            <div id="gallery-grid" class="masonry-grid fade-up delay-2">
-                <!-- Gallery items injected here -->
+            <div id="about-text">
+                <p>Loading gallery details...</p>
+            </div>
+            
+            <div style="margin-top: 5rem;">
+                <h2 style="font-size: 1.2rem; margin-bottom: 2rem;">Visit Us</h2>
+                <table class="hours-table" id="hours-table">
+                    <!-- Hours injected here -->
+                </table>
             </div>
         </div>
-    </section>
-
-    <!-- Info Section (Hours & Map) -->
-    <section class="section info-section">
-        <div class="container">
-            <div class="info-grid fade-up">
-                <div class="hours-panel">
-                    <h2>Visit Us</h2>
-                    <table class="hours-table" id="hours-table">
-                        <!-- Hours injected here -->
-                    </table>
-                </div>
-                <div class="map-panel">
-                    <iframe src="https://maps.google.com/maps?q=5500+Blaine+Ave,+Inver+Grove+Heights,+MN+55076&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-            </div>
+        
+        <div class="map-container fade-up delay-1">
+            <iframe src="https://maps.google.com/maps?q=5500+Blaine+Ave,+Inver+Grove+Heights,+MN+55076&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </section>
 
     <!-- Book Appointment Section -->
-    <section class="section appointment-section">
+    <section class="section appointment-section" id="appointment">
         <div class="container">
-            <div class="appointment-header">
-                <h2 class="reveal-mask"><span>Private Consultations</span></h2>
-                <p class="fade-up delay-1" style="color: var(--text-sec); font-size: 1.2rem;">Book time with our landscape and hardscape design experts.</p>
+            <div class="section-header fade-up">
+                <h2>Private Consultations</h2>
+                <p>Book time with our landscape and hardscape design experts.</p>
             </div>
-            <div class="calendly-placeholder fade-up delay-2">
-                <svg style="width: 48px; height: 48px; margin-bottom: 1.5rem; fill: var(--highlight);" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
-                <p style="font-size: 1.1rem;">[ Calendly Booking Widget Embed Location ]</p>
+            <div class="calendly-placeholder fade-up delay-1">
+                <p>[ Calendly Booking Widget Embed Location ]</p>
             </div>
         </div>
     </section>
@@ -647,12 +569,15 @@
         <div class="container fade-up">
             <div class="footer-logo-container" id="footer-logo-container">
                 <svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Playfair Display', serif" font-size="40" font-style="italic" letter-spacing="1">Gertens Gallery</text>
+                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="28" font-weight="300" letter-spacing="8">GERTENS GALLERY</text>
                 </svg>
             </div>
-            <div style="display: flex; gap: 2rem; justify-content: center; margin-top: 1rem;">
-                <a href="#" style="color: var(--bg); text-decoration: none; opacity: 0.8; font-size: 0.9rem;">Directions</a>
-                <a href="#" style="color: var(--bg); text-decoration: none; opacity: 0.8; font-size: 0.9rem;">Main Website</a>
+            <div class="footer-links">
+                <a href="#">Pre-Owned</a>
+                <a href="#">Cookies</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy</a>
+                <a href="#appointment">Appointments</a>
             </div>
             <p class="footer-text">&copy; 2026 Gertens Gallery. All rights reserved.</p>
         </div>
@@ -663,11 +588,11 @@
         <div class="lightbox-content">
             <button id="lightbox-close" class="lightbox-close">&times;</button>
             <button id="lightbox-prev" class="lightbox-nav lightbox-prev">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             </button>
             <img id="lightbox-img" class="lightbox-img" src="" alt="Gallery View" referrerpolicy="no-referrer">
             <button id="lightbox-next" class="lightbox-nav lightbox-next">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </button>
         </div>
     </div>
@@ -736,8 +661,8 @@
                 const logoKey = Object.keys(dict).find(k => k.includes('logo'));
                 if (logoKey && dict[logoKey]) {
                     const logoUrl = getDirectImageUrl(dict[logoKey]);
-                    const logoHtml = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer">`;
-                    document.getElementById('hero-logo-container').innerHTML = logoHtml;
+                    const logoHtml = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 35px; object-fit: contain;">`;
+                    document.getElementById('nav-logo-container').innerHTML = logoHtml;
                     document.getElementById('footer-logo-container').innerHTML = logoHtml;
                 }
             } catch (err) { console.error("Content error:", err); }
@@ -760,43 +685,43 @@
             try {
                 const imagesRes = await fetch(CSV_URLS.images);
                 const imagesData = parseCSV(await imagesRes.text());
-                const gridEl = document.getElementById('gallery-grid');
+                const trackEl = document.getElementById('gallery-track');
                 
                 imagesData.forEach((row, i) => {
-                    if (i === 0 && row[0].toLowerCase().includes('url')) return;
-                    const rawUrl = row[0] ? row[0].trim() : '';
+                    if (i === 0) return; // Skip header
+                    const imgAlt = row[0] ? row[0].trim() : ''; // Column A 
+                    const rawUrl = row[1] ? row[1].trim() : ''; // Column B 
                     if (rawUrl) {
                         const imgUrl = getDirectImageUrl(rawUrl);
                         galleryImagesList.push(imgUrl);
                         
+                        // RR Style Card Injection into Slider Track
                         const div = document.createElement('div');
-                        div.className = 'masonry-item';
+                        div.className = 'explore-item';
                         div.onclick = () => openLightbox(galleryImagesList.length - 1);
-                        div.innerHTML = `<img src="${imgUrl}" alt="${row[1] || ''}" loading="lazy" referrerpolicy="no-referrer">`;
-                        gridEl.appendChild(div);
+                        div.innerHTML = `
+                            <div class="explore-img-wrapper">
+                                <img src="${imgUrl}" alt="${imgAlt}" loading="lazy" referrerpolicy="no-referrer">
+                            </div>
+                            <div class="explore-text">
+                                <h3>${imgAlt || 'Gallery View'}</h3>
+                                <p>Discover premium materials and exceptional design.</p>
+                            </div>
+                        `;
+                        trackEl.appendChild(div);
                     }
                 });
 
-                // Populate Hero Parallax & About Image
+                // Set Hero Background dynamically to the first image from CSV
                 if (galleryImagesList.length > 0) {
-                    // Use a specific image for the about section if available, else use first
-                    document.getElementById('about-featured-image').src = galleryImagesList[Math.min(2, galleryImagesList.length - 1)];
-                    
-                    // Assign images to hero floating boxes
-                    const p1 = document.querySelector('#p-img-1');
-                    const p2 = document.querySelector('#p-img-2');
-                    const p3 = document.querySelector('#p-img-3');
-                    
-                    if(galleryImagesList[0]) { p1.querySelector('img').src = galleryImagesList[0]; p1.classList.add('loaded'); }
-                    if(galleryImagesList[1]) { p2.querySelector('img').src = galleryImagesList[1]; p2.classList.add('loaded'); }
-                    if(galleryImagesList[galleryImagesList.length-1]) { p3.querySelector('img').src = galleryImagesList[galleryImagesList.length-1]; p3.classList.add('loaded'); }
+                    document.getElementById('hero-section').style.backgroundImage = `url('${galleryImagesList[0]}')`;
                 }
 
             } catch (err) { console.error("Images error:", err); }
         }
 
-        // --- Scroll Animations (Intersection Observer) ---
-        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -100px 0px" };
+        // --- Scroll Animations ---
+        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -806,19 +731,22 @@
             });
         }, observerOptions);
 
-        // --- Scroll Parallax Engine ---
-        function initParallax() {
-            const parallaxElements = document.querySelectorAll('[data-speed]');
-            window.addEventListener('scroll', () => {
-                const scrollY = window.pageYOffset;
-                requestAnimationFrame(() => {
-                    parallaxElements.forEach(el => {
-                        const speed = el.getAttribute('data-speed');
-                        el.style.transform = `translateY(${scrollY * speed}px)`;
-                    });
-                });
-            }, { passive: true });
-        }
+        // --- Slider Navigation Logic ---
+        const sliderViewport = document.getElementById('slider-viewport');
+        document.getElementById('slider-prev').addEventListener('click', () => {
+            const itemElement = sliderViewport.querySelector('.explore-item');
+            if (itemElement) {
+                const itemWidth = itemElement.clientWidth + 32; // width + gap
+                sliderViewport.scrollBy({ left: -itemWidth, behavior: 'smooth' });
+            }
+        });
+        document.getElementById('slider-next').addEventListener('click', () => {
+            const itemElement = sliderViewport.querySelector('.explore-item');
+            if (itemElement) {
+                const itemWidth = itemElement.clientWidth + 32; 
+                sliderViewport.scrollBy({ left: itemWidth, behavior: 'smooth' });
+            }
+        });
 
         // --- Lightbox ---
         const lightbox = document.getElementById('lightbox');
@@ -859,15 +787,12 @@
         // --- Init ---
         document.addEventListener('DOMContentLoaded', () => {
             fetchAndPopulate();
-            document.querySelectorAll('.reveal-mask, .fade-up').forEach(el => observer.observe(el));
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
             
-            // Immediately trigger animations in hero (since they are in viewport on load)
+            // Trigger hero animation immediately
             setTimeout(() => {
-                document.querySelector('.hero .reveal-mask').classList.add('in-view');
                 document.querySelector('.hero .fade-up').classList.add('in-view');
             }, 100);
-
-            initParallax();
         });
     </script>
 </body>
