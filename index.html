@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gertens Gallery | Minnesota's Hardscape Showroom</title>
+    <link id="dynamic-favicon" rel="icon" href="data:,">
     
     <!-- Google Fonts for Elegant Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -156,6 +157,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0; /* Hidden when at the top */
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Fades the logo in when the nav becomes sticky/dark */
+        .top-nav.scrolled .nav-center {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .nav-center svg {
@@ -402,6 +412,10 @@
         /* --- Info & About Section (RR Style) --- */
         .info-section {
             text-align: center;
+            width: 100%;
+        }
+        
+        .info-section .container {
             max-width: 800px;
             margin: 0 auto;
         }
@@ -553,7 +567,7 @@
         </div>
         
         <a href="#appointment" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
             <span>Make an Appointment</span>
         </a>
     </nav>
@@ -633,7 +647,7 @@
         </div>
         
         <div class="map-container fade-up delay-1">
-            <iframe src="https://maps.google.com/maps?q=5500+Blaine+Ave,+Inver+Grove+Heights,+MN+55076&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe id="location-map" src="https://maps.google.com/maps?q=5500+Blaine+Ave,+Inver+Grove+Heights,+MN+55076&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </section>
 
@@ -646,13 +660,10 @@
                 </svg>
             </div>
             <div class="footer-links">
-                <a href="#">Pre-Owned</a>
-                <a href="#">Cookies</a>
                 <a href="#">Contact</a>
-                <a href="#">Privacy</a>
                 <a href="#appointment">Appointments</a>
             </div>
-            <p class="footer-text">&copy; 2026 Gertens Gallery. All rights reserved.</p>
+            <p class="footer-text">&copy; <span id="current-year"></span> Gertens Gallery. All rights reserved.</p>
         </div>
     </footer>
 
@@ -783,6 +794,34 @@
                     if(heroLogoContainer) heroLogoContainer.innerHTML = logoHtmlLarge;
                     document.getElementById('footer-logo-container').innerHTML = logoHtmlFooter;
                 }
+
+                // Apply Favicon (Pulls from Cell B7 or Key Match)
+                let faviconUrlRaw = '';
+                const faviconKey = Object.keys(dict).find(k => k.includes('favicon'));
+                if (faviconKey && dict[faviconKey]) {
+                    faviconUrlRaw = dict[faviconKey];
+                } else if (contentData.length >= 7 && contentData[6][1] && contentData[6][1].startsWith('http')) {
+                    faviconUrlRaw = contentData[6][1]; // Cell B7 explicit fallback
+                }
+
+                if (faviconUrlRaw) {
+                    const faviconUrl = getDirectImageUrl(faviconUrlRaw);
+                    document.getElementById('dynamic-favicon').href = faviconUrl;
+                }
+
+                // Apply Address to Map (Pulls from Cell B3 or Key Match)
+                let addressRaw = dict['address'] || dict['location'];
+                if (!addressRaw && contentData.length >= 3 && contentData[2][1]) {
+                    addressRaw = contentData[2][1]; // Cell B3 explicit fallback
+                }
+
+                if (addressRaw) {
+                    const mapIframe = document.getElementById('location-map');
+                    if (mapIframe) {
+                        mapIframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(addressRaw)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+                    }
+                }
+
             } catch (err) { console.error("Content error:", err); }
 
             // 2. Hours
@@ -919,6 +958,10 @@
 
         // --- Init ---
         document.addEventListener('DOMContentLoaded', () => {
+            // Dynamically set the copyright year to the current US year
+            const usYear = new Date().toLocaleString("en-US", { timeZone: "America/Chicago", year: "numeric" });
+            document.getElementById('current-year').textContent = usYear;
+
             fetchAndPopulate();
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
             
