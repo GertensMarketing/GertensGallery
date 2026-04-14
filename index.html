@@ -194,15 +194,17 @@
         }
         
         @media (max-width: 768px) {
-            .top-nav { padding: 1.2rem 1.5rem; }
-            .top-nav.scrolled { padding: 0.8rem 1.5rem; }
+            .top-nav { padding: 1.2rem 1rem; } /* Pulled closer to edges to save space */
+            .top-nav.scrolled { padding: 0.8rem 1rem; }
+            .nav-item { font-size: 0.65rem; } /* Smaller font on small screens */
             .nav-item.menu-item span { display: none; } /* Hide only Menu text on mobile */
-            .nav-center { height: 35px; }
+            .nav-center { height: 30px; } /* Slightly scale down logo on mobile */
             
             /* Swap to shorter text and adjust right-padding on mobile */
             .appt-text-full { display: none; }
             .appt-text-short { display: inline; }
-            .top-nav.scrolled .nav-item.appt-item { right: 1.5rem; }
+            .nav-item.appt-item { gap: 0.15rem; } /* Shrinks the space between the arrow and text */
+            .top-nav.scrolled .nav-item.appt-item { right: 1rem; }
         }
 
         /* --- Cinematic Hero Section --- */
