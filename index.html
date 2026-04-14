@@ -209,7 +209,7 @@
   <section id="hero">
     <div id="mosaic-bg"></div>
     <div class="hero-content">
-      <p class="hero-eyebrow" id="hero-eyebrow">Now Open — Gertens Gallery</p>
+      <p class="hero-eyebrow" id="hero-eyebrow">Now Open in Eden Prairie</p>
 
       <!--
         Logo image: src is set by JS from cell B6 of the Homepage Content CSV.
@@ -433,9 +433,11 @@
         const setH = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML   = val; };
 
         // Content fields
+        if (d['Page Title'])            document.title = d['Page Title'];
         if (d['Address:'])              set('location-address', d['Address:']);
         if (d['About Us'])              setH('about-body', d['About Us'].replace(/\n/g, '<br><br>'));
-        if (d['Page Title'])            document.title = d['Page Title'];
+        if (d['Top SubHeader'])         set('hero-eyebrow',  d['Top SubHeader']);
+        if (d['Top Headline'])          set('hero-headline', d['Top Headline']);
 
         // Images — override hardcoded src only if CSV value differs
         if (d['Navigation logo']) {
@@ -476,11 +478,36 @@
         const rows = parseCSV(await fetchText(CSV_HOURS));
         tbody.innerHTML = '';
         rows.forEach(r => {
-          const day   = r.day   || r.Day   || Object.values(r)[0] || '';
-          const hours = r.hours || r.Hours || Object.values(r)[1] || '';
+          const day   = r.Day   || r.day   || Object.values(r)[0] || '';
+          const open  = r.Open  || r.open  || Object.values(r)[1] || '';
+          const close = r.Close || r.close || Object.values(r)[2] || '';
           if (!day) return;
+
+          // Convert raw time string (e.g. "10:00:00") to "10:00 AM"
+          function fmtTime(t) {
+            if (!t || t.toString().toUpperCase() === 'CLOSED') return null;
+            if (/[ap]m/i.test(t)) return t.toString().trim(); // already formatted
+            const parts = t.toString().split(':');
+            if (parts.length >= 2) {
+              let h = parseInt(parts[0], 10);
+              const m = parts[1].padStart(2, '0');
+              const ampm = h >= 12 ? 'PM' : 'AM';
+              if (h > 12) h -= 12;
+              if (h === 0) h = 12;
+              return `${h}:${m} ${ampm}`;
+            }
+            return t;
+          }
+
+          const openFmt  = fmtTime(open);
+          const closeFmt = fmtTime(close);
+
+          const hoursDisplay = openFmt
+            ? `${openFmt} &ndash; ${closeFmt}`
+            : `<span style="color:var(--color-gold);letter-spacing:0.08em;font-size:0.78rem;">CLOSED</span>`;
+
           const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${day}</td><td>${hours || 'Closed'}</td>`;
+          tr.innerHTML = `<td>${day}</td><td>${hoursDisplay}</td>`;
           tbody.appendChild(tr);
         });
       } catch (err) {
