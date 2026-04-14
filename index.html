@@ -149,6 +149,25 @@
             fill: currentColor;
         }
 
+        /* Initial centered state for the appointment button */
+        .nav-item.appt-item {
+            position: absolute;
+            right: 50%;
+            transform: translateX(50%);
+            transition: right 0.4s ease, transform 0.4s ease, color 0.3s;
+            white-space: nowrap;
+        }
+
+        /* Scrolled state moves the appointment button to the right edge */
+        .top-nav.scrolled .nav-item.appt-item {
+            right: 3rem;
+            transform: translateX(0);
+        }
+
+        .appt-text-short {
+            display: none;
+        }
+
         .nav-center {
             position: absolute;
             left: 50%;
@@ -177,8 +196,13 @@
         @media (max-width: 768px) {
             .top-nav { padding: 1.2rem 1.5rem; }
             .top-nav.scrolled { padding: 0.8rem 1.5rem; }
-            .nav-item span { display: none; } /* Hide text on mobile, keep icons */
+            .nav-item.menu-item span { display: none; } /* Hide only Menu text on mobile */
             .nav-center { height: 35px; }
+            
+            /* Swap to shorter text and adjust right-padding on mobile */
+            .appt-text-full { display: none; }
+            .appt-text-short { display: inline; }
+            .top-nav.scrolled .nav-item.appt-item { right: 1.5rem; }
         }
 
         /* --- Cinematic Hero Section --- */
@@ -554,7 +578,7 @@
 
     <!-- Transparent Top Navigation -->
     <nav class="top-nav">
-        <div class="nav-item">
+        <div class="nav-item menu-item">
             <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
             <span>Menu</span>
         </div>
@@ -566,9 +590,10 @@
             </svg>
         </div>
         
-        <a href="#appointment" class="nav-item">
+        <a href="#appointment" class="nav-item appt-item">
             <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
-            <span>Make an Appointment</span>
+            <span class="appt-text-full">Make an Appointment</span>
+            <span class="appt-text-short">Appointments</span>
         </a>
     </nav>
 
@@ -636,9 +661,9 @@
     </section>
 
     <!-- Visit Us Section -->
-    <section class="section info-section fade-up" style="border-top: 1px solid rgba(240, 239, 235, 0.1);">
+    <section class="section info-section fade-up" style="border-top: 1px solid rgba(240, 239, 235, 0.1); padding-top: 4rem; padding-bottom: 0;">
         <div class="container">
-            <div class="section-header" style="margin-top: 2rem;">
+            <div class="section-header" style="margin-bottom: 0;">
                 <h2 style="font-size: 1.2rem; margin-bottom: 2rem;">Visit Us</h2>
             </div>
             <table class="hours-table" id="hours-table">
