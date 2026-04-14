@@ -46,14 +46,96 @@
     /* NAV */
     #site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 18px clamp(24px, 6vw, 80px); display: flex; align-items: center; justify-content: space-between; transition: background 0.5s ease, box-shadow 0.5s ease; }
     #site-header.scrolled { background: rgba(74,98,117,0.96); box-shadow: 0 1px 0 rgba(214,205,149,0.15); backdrop-filter: blur(12px); }
-    /* Nav logo — set from CSV B9, falls back to hero logo if CSV unavailable */
-    #nav-logo-img { height: 38px; width: auto; object-fit: contain; display: block; }
+
+    /* Nav logo: hidden at top, fades in once hero logo scrolls out of view */
+    #nav-logo-img {
+      height: 38px; width: auto; object-fit: contain; display: block;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    #nav-logo-img.logo-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
     #nav-logo-text { display: none; }
     #nav-logo-text span { font-weight: 300; font-style: italic; color: var(--color-gold); }
+
+    /* Desktop nav links */
     nav a { font-family: var(--font-body); font-weight: 300; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-bg); margin-left: 2.5rem; opacity: 0.8; transition: opacity 0.3s; }
     nav a:hover { opacity: 1; }
     .nav-cta { border: 1px solid var(--color-gold) !important; padding: 8px 20px; opacity: 1 !important; color: var(--color-gold) !important; transition: background 0.3s, color 0.3s !important; }
     .nav-cta:hover { background: var(--color-gold) !important; color: var(--color-main) !important; }
+
+    /* Hamburger button — mobile only */
+    #hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 200;
+    }
+    #hamburger span {
+      display: block;
+      width: 100%;
+      height: 1.5px;
+      background: #d6cd95;
+      border-radius: 2px;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+      transform-origin: center;
+    }
+    /* Animate to X when open */
+    #hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    #hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    #hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile dropdown menu */
+    #mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(74, 98, 117, 0.98);
+      backdrop-filter: blur(16px);
+      z-index: 150;
+      padding: 90px 40px 48px;
+      flex-direction: column;
+      gap: 0;
+      transform: translateY(-100%);
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #mobile-menu.open {
+      transform: translateY(0);
+    }
+    #mobile-menu a {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-bg);
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(214, 205, 149, 0.12);
+      opacity: 0.85;
+      transition: opacity 0.3s, color 0.3s;
+    }
+    #mobile-menu a:last-child { border-bottom: none; }
+    #mobile-menu a:hover { opacity: 1; color: var(--color-gold); }
+    #mobile-menu .mob-cta {
+      margin-top: 2rem;
+      border: 1px solid var(--color-gold) !important;
+      padding: 14px 0;
+      text-align: center;
+      color: var(--color-gold) !important;
+      opacity: 1 !important;
+      border-bottom: 1px solid var(--color-gold) !important;
+    }
+    #mobile-menu .mob-cta:hover { background: var(--color-gold); color: var(--color-main) !important; }
 
     /* HERO */
     #hero { position: relative; width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background-color: var(--color-main); }
@@ -194,14 +276,33 @@
     @keyframes loadPulse { 0%,100%{opacity:0.2;transform:scaleX(0.5)} 50%{opacity:1;transform:scaleX(1)} }
 
     @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } .about-img-wrapper { aspect-ratio: 4/3; } }
-    @media (max-width: 600px) { nav { display: none; } .gallery-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 700px) {
+      nav { display: none; }
+      #hamburger { display: flex; }
+      #mobile-menu { display: flex; }
+      .gallery-grid { grid-template-columns: repeat(2,1fr); }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Mobile fullscreen menu (slides down from top) -->
+  <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="#about"   onclick="closeMobileMenu()">About</a>
+    <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+    <a href="#hours"   onclick="closeMobileMenu()">Hours</a>
+    <a href="#location" onclick="closeMobileMenu()">Location</a>
+    <a href="#booking"  onclick="closeMobileMenu()" class="mob-cta">Book a Visit</a>
+  </div>
+
   <header id="site-header">
-    <img id="nav-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white-top.png" alt="Gertens Gallery" style="height:40px;width:auto;object-fit:contain;display:block;" />
+    <!-- Logo: invisible at top, fades in as user scrolls past the hero logo -->
+    <img id="nav-logo-img"
+         src="https://gertensgallery.netlify.app/images/GertensGallery_white-top.png"
+         alt="Gertens Gallery" />
     <div id="nav-logo-text">Gertens <span>Gallery</span></div>
+
+    <!-- Desktop navigation -->
     <nav>
       <a href="#about">About</a>
       <a href="#gallery">Gallery</a>
@@ -209,6 +310,13 @@
       <a href="#location">Location</a>
       <a href="#booking" class="nav-cta">Book a Visit</a>
     </nav>
+
+    <!-- Hamburger: mobile only -->
+    <button id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </header>
 
   <section id="hero">
@@ -623,10 +731,54 @@
       els.forEach(el => { el.classList.add('seen'); obs.observe(el); });
     }
 
-    // ── Sticky header ─────────────────────────────────────────────
+    // ── Sticky header background on scroll ───────────────────────
     window.addEventListener('scroll', () => {
       document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
+
+    // ── Nav logo: fade in when hero logo scrolls out of view ──────
+    // Uses IntersectionObserver on #hero-logo-img.
+    // When the hero logo is no longer intersecting (user scrolled past it),
+    // we add .logo-visible to the nav logo, fading it in.
+    (function() {
+      const heroLogo = document.getElementById('hero-logo-img');
+      const navLogo  = document.getElementById('nav-logo-img');
+      if (!heroLogo || !navLogo) return;
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLogo.classList.remove('logo-visible'); // hero visible → hide nav logo
+          } else {
+            navLogo.classList.add('logo-visible');    // hero gone → show nav logo
+          }
+        });
+      }, { threshold: 0.1 });
+      obs.observe(heroLogo);
+    })();
+
+    // ── Hamburger / mobile menu ───────────────────────────────────
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    function openMobileMenu() {
+      hamburger.classList.add('open');
+      mobileMenu.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+    });
+    // Close on Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobileMenu();
+    });
 
     // ── Footer year ───────────────────────────────────────────────
     document.getElementById('footer-year').textContent = new Date().getFullYear();
