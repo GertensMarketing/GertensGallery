@@ -46,7 +46,7 @@
     #site-header.scrolled { background: rgba(74,98,117,0.96); box-shadow: 0 1px 0 rgba(214,205,149,0.15); backdrop-filter: blur(12px); }
     /* Nav uses the same logo image as the hero */
     #nav-logo-img { height: 38px; width: auto; object-fit: contain; display: block; }
-    #nav-logo-text { font-family: var(--font-display); font-weight: 400; font-size: 1.4rem; letter-spacing: 0.12em; color: var(--color-bg); text-transform: uppercase; display: none; }
+    #nav-logo-text { display: none; }
     #nav-logo-text span { font-weight: 300; font-style: italic; color: var(--color-gold); }
     nav a { font-family: var(--font-body); font-weight: 300; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-bg); margin-left: 2.5rem; opacity: 0.8; transition: opacity 0.3s; }
     nav a:hover { opacity: 1; }
@@ -87,7 +87,7 @@
       line-height: 1; text-transform: uppercase;
       margin-bottom: 3rem;
       opacity: 0; animation: fadeUp 1s 0.5s forwards;
-      display: none; /* shown only if #hero-logo-img onerror fires */
+      display: none;
     }
 
     .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom,transparent,var(--color-gold),transparent); margin: 0 auto 2.5rem; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
@@ -174,7 +174,7 @@
     /* FOOTER */
     #footer { background: #2a3a45; padding: 60px clamp(24px,6vw,80px); text-align: center; }
     #footer-logo-img { height: 50px; width: auto; object-fit: contain; margin: 0 auto 0.8rem; display: block; }
-    #footer-logo-text { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; letter-spacing: 0.12em; color: var(--color-bg); text-transform: uppercase; margin-bottom: 0.3rem; display: none; }
+    #footer-logo-text { display: none; }
     #footer-logo-text span { font-style: italic; color: var(--color-gold); font-weight: 300; }
     .footer-tagline { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(240,239,235,0.3); margin-bottom: 2rem; }
     .footer-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2rem; margin-bottom: 2.5rem; }
@@ -193,8 +193,7 @@
 <body>
 
   <header id="site-header">
-    <img id="nav-logo-img" src="/images/GertensGallery_white.png" alt="Gertens Gallery"
-         onerror="this.style.display='none';document.getElementById('nav-logo-text').style.display='block';" />
+    <img id="nav-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white.png" alt="Gertens Gallery" />
     <div id="nav-logo-text">Gertens <span>Gallery</span></div>
     <nav>
       <a href="#about">About</a>
@@ -217,8 +216,7 @@
         cleanly against the dark mosaic background.
         If the URL is missing or broken, the fallback h1 appears instead.
       -->
-      <img id="hero-logo-img" src="/images/GertensGallery_white.png" alt="Gertens Gallery"
-           onerror="this.style.display='none';document.getElementById('hero-logo-fallback').style.display='block';" />
+      <img id="hero-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white.png" alt="Gertens Gallery" />
       <h1 id="hero-logo-fallback">Gertens Gallery</h1>
 
       <div class="hero-divider"></div>
@@ -336,8 +334,7 @@
   </section>
 
   <footer id="footer">
-    <img id="footer-logo-img" src="/images/GertensGallery_white.png" alt="Gertens Gallery"
-         onerror="this.style.display='none';document.getElementById('footer-logo-text').style.display='block';" />
+    <img id="footer-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white.png" alt="Gertens Gallery" />
     <div id="footer-logo-text">Gertens <span>Gallery</span></div>
     <p class="footer-tagline">A Gertens Experience &mdash; Hardscape &amp; Landscape Artistry</p>
     <div class="footer-links">
@@ -389,14 +386,7 @@
     const CSV_HOURS  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=1768246174&single=true&output=csv';
     const CSV_IMAGES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=1576387379&single=true&output=csv';
 
-    // ── Apply logo to hero, nav, and footer ──────────────────────
-    function applyLogo(url) {
-      if (!url) return;
-      ['hero-logo-img', 'nav-logo-img', 'footer-logo-img'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.src = url;
-      });
-    }
+    // Logo is hardcoded in HTML — no JS needed
 
     // ── Homepage content ─────────────────────────────────────────
     async function loadHome() {
@@ -409,7 +399,7 @@
         // (row index 5 = 6th row, column index 1 = column B)
         const grid = parseCSVGrid(raw);
         const logoUrl = grid[5] && grid[5][1] ? grid[5][1] : '/images/GertensGallery_white.png';
-        applyLogo(logoUrl);
+
 
         // ── Other content via key/value pairs ──
         const rows = parseCSV(raw);
