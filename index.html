@@ -254,6 +254,43 @@
             color: var(--highlight);
         }
 
+        /* --- About Section Styles --- */
+        .about-section {
+            position: relative;
+            background-color: var(--primary);
+            border-bottom: 1px solid rgba(240, 239, 235, 0.1);
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: var(--about-bg, none);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .elegant-bold-text {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .elegant-bold-text p {
+            font-family: var(--font-serif);
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            font-weight: 500;
+            line-height: 1.8;
+            color: var(--bg);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Enhances readability over the image */
+        }
+
         /* --- Sliding Gallery Styles --- */
         .slider-wrapper {
             position: relative;
@@ -535,6 +572,15 @@
         </div>
     </header>
 
+    <!-- About Section (Moved Above Gallery) -->
+    <section class="section about-section fade-up" id="about-section">
+        <div class="container" style="position: relative; z-index: 1;">
+            <div id="about-text" class="elegant-bold-text">
+                <p>Loading gallery details...</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Explore Further (Gallery) -->
     <section class="section explore-section">
         <div class="container">
@@ -561,39 +607,32 @@
         </div>
     </section>
 
-    <!-- About & Info Section -->
-    <section class="section info-section fade-up">
-        <div class="container">
-            <div class="section-header">
-                <h2 id="about-title">The Gallery Experience</h2>
-            </div>
-            <div id="about-text">
-                <p>Loading gallery details...</p>
-            </div>
-            
-            <div style="margin-top: 5rem;">
-                <h2 style="font-size: 1.2rem; margin-bottom: 2rem;">Visit Us</h2>
-                <table class="hours-table" id="hours-table">
-                    <!-- Hours injected here -->
-                </table>
-            </div>
-        </div>
-        
-        <div class="map-container fade-up delay-1">
-            <iframe src="https://maps.google.com/maps?q=5500+Blaine+Ave,+Inver+Grove+Heights,+MN+55076&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-    </section>
-
     <!-- Book Appointment Section -->
     <section class="section appointment-section" id="appointment">
         <div class="container">
             <div class="section-header fade-up">
-                <h2>Private Consultations</h2>
+                <h2>Schedule your Appointment</h2>
                 <p>Book time with our landscape and hardscape design experts.</p>
             </div>
             <div class="calendly-placeholder fade-up delay-1">
                 <p>[ Calendly Booking Widget Embed Location ]</p>
             </div>
+        </div>
+    </section>
+
+    <!-- Visit Us Section -->
+    <section class="section info-section fade-up" style="border-top: 1px solid rgba(240, 239, 235, 0.1);">
+        <div class="container">
+            <div class="section-header" style="margin-top: 2rem;">
+                <h2 style="font-size: 1.2rem; margin-bottom: 2rem;">Visit Us</h2>
+            </div>
+            <table class="hours-table" id="hours-table">
+                <!-- Hours injected here -->
+            </table>
+        </div>
+        
+        <div class="map-container fade-up delay-1">
+            <iframe src="https://maps.google.com/maps?q=5500+Blaine+Ave,+Inver+Grove+Heights,+MN+55076&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </section>
 
@@ -682,19 +721,48 @@
 
                 document.getElementById('hero-headline').textContent = dict['headline'] || dict['title'] || 'Experience the Gallery';
                 document.getElementById('hero-subheadline').textContent = dict['subheadline'] || dict['subtitle'] || 'Premium Hardscape & Landscaping Materials';
-                document.getElementById('about-title').textContent = dict['about title'] || dict['abouttitle'] || 'The Gallery Experience';
                 
-                let aboutTextRaw = dict['about text'] || dict['abouttext'];
+                let aboutTextRaw = dict['about text'] || dict['abouttext'] || dict['about'] || dict['description'];
                 
-                // Explicitly pull Cell B8 (Row index 7, Col index 1) if key is missing/different
-                if (!aboutTextRaw && contentData.length >= 8 && contentData[7].length >= 2) {
-                    aboutTextRaw = contentData[7][1]; 
+                // Bulletproof Fallback: Find the longest paragraph in Column B 
+                // (The 'About' text is usually the longest string in the CSV)
+                if (!aboutTextRaw) {
+                    let longestText = "";
+                    contentData.forEach(row => {
+                        if (row && row.length >= 2 && row[1]) {
+                            const cellText = row[1].trim();
+                            // Ensure it's not a URL and is the longest text found
+                            if (cellText.length > longestText.length && !cellText.startsWith('http')) {
+                                longestText = cellText;
+                            }
+                        }
+                    });
+                    if (longestText.length > 30) {
+                        aboutTextRaw = longestText;
+                    }
                 }
 
-                if(aboutTextRaw) {
+                // Apply the text
+                if (aboutTextRaw) {
                     document.getElementById('about-text').innerHTML = aboutTextRaw.split('\n')
                         .filter(p => p.trim() !== '')
                         .map(p => `<p>${p}</p>`).join('');
+                } else {
+                    document.getElementById('about-text').innerHTML = '<p>Discover premium materials and exceptional design.</p>';
+                }
+
+                // Apply the About Background Image (Pulls from Cell B8 or Key Match)
+                let aboutBgUrlRaw = '';
+                const bgKey = Object.keys(dict).find(k => k.includes('background'));
+                if (bgKey && dict[bgKey]) {
+                    aboutBgUrlRaw = dict[bgKey];
+                } else if (contentData.length >= 8 && contentData[7][1] && contentData[7][1].startsWith('http')) {
+                    aboutBgUrlRaw = contentData[7][1]; // Cell B8 explicit fallback
+                }
+
+                if (aboutBgUrlRaw) {
+                    const bgUrl = getDirectImageUrl(aboutBgUrlRaw);
+                    document.getElementById('about-section').style.setProperty('--about-bg', `url('${bgUrl}')`);
                 }
 
                 const logoKey = Object.keys(dict).find(k => k.includes('logo'));
@@ -722,7 +790,12 @@
                 hoursData.forEach((row, i) => {
                     if (i === 0 && row[0].toLowerCase().includes('day')) return; 
                     if (row.length >= 2 && row[0].trim() !== '') {
-                        hoursHTML += `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`;
+                        let timeString = row[1];
+                        // If there is a closing time in the third column, append it with a dash
+                        if (row.length >= 3 && row[2] && row[2].trim() !== '' && row[1].toLowerCase() !== 'closed') {
+                            timeString += ` - ${row[2]}`;
+                        }
+                        hoursHTML += `<tr><td>${row[0]}</td><td>${timeString}</td></tr>`;
                     }
                 });
                 document.getElementById('hours-table').innerHTML = hoursHTML || '<tr><td>Check back soon for hours.</td></tr>';
