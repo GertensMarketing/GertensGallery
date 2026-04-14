@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gertens Gallery | High-End Landscaping & Hardscape</title>
+    <title>Gertens Gallery | Minnesota's Hardscape Showroom</title>
     
     <!-- Google Fonts for Elegant Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -568,13 +568,15 @@
                 </svg>
             </div>
             <h1 id="hero-headline">[Headline Loading]</h1>
-            <p id="hero-subheadline">[Subheadline Loading]</p>
         </div>
     </header>
 
     <!-- About Section (Moved Above Gallery) -->
     <section class="section about-section fade-up" id="about-section">
         <div class="container" style="position: relative; z-index: 1;">
+            <div class="section-header">
+                <h2 id="about-title">EXPERIENCE THE GALLERY</h2>
+            </div>
             <div id="about-text" class="elegant-bold-text">
                 <p>Loading gallery details...</p>
             </div>
@@ -585,8 +587,7 @@
     <section class="section explore-section">
         <div class="container">
             <div class="section-header fade-up">
-                <h2>Explore Further</h2>
-                <p>Take a Look Inside the Gallery</p>
+                <h2>Take a Look Inside the Gallery</h2>
             </div>
             
             <div class="slider-wrapper fade-up delay-1">
@@ -719,8 +720,10 @@
                     if (row.length >= 2 && row[0]) dict[row[0].trim().toLowerCase()] = row[1].trim();
                 });
 
-                document.getElementById('hero-headline').textContent = dict['headline'] || dict['title'] || 'Experience the Gallery';
-                document.getElementById('hero-subheadline').textContent = dict['subheadline'] || dict['subtitle'] || 'Premium Hardscape & Landscaping Materials';
+                document.getElementById('hero-headline').textContent = dict['headline'] || dict['title'] || 'NOW TAKING APPOINTMENTS';
+                
+                let aboutTitleRaw = dict['about title'] || dict['abouttitle'];
+                if(aboutTitleRaw) document.getElementById('about-title').textContent = aboutTitleRaw;
                 
                 let aboutTextRaw = dict['about text'] || dict['abouttext'] || dict['about'] || dict['description'];
                 
