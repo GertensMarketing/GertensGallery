@@ -195,19 +195,122 @@
     .about-img-wrapper:hover img { transform: scale(1.04); filter: saturate(1) brightness(1); }
     .about-img-frame { position: absolute; inset: 16px; border: 1px solid rgba(214,205,149,0.35); pointer-events: none; z-index: 1; }
 
-    /* GALLERY */
-    #gallery { background: var(--color-main); color: var(--color-bg); }
+    /* GALLERY — horizontal slider */
+    #gallery {
+      background: var(--color-main);
+      color: var(--color-bg);
+      /* Remove side padding so track goes edge-to-edge */
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: 0;
+    }
     #gallery .section-title { color: var(--color-bg); }
     #gallery .section-body  { color: rgba(240,239,235,0.65); }
     #gallery .section-label { color: var(--color-gold); }
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 3px; margin-top: 3rem; }
-    .gallery-item { position: relative; aspect-ratio: 1/1; overflow: hidden; cursor: pointer; background: #364f5e; }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s var(--transition-base), filter 0.7s; filter: brightness(0.9) saturate(0.85); }
-    .gallery-item:hover img { transform: scale(1.07); filter: brightness(1) saturate(1); }
-    .gallery-item-overlay { position: absolute; inset: 0; background: rgba(74,98,117,0); display: flex; align-items: center; justify-content: center; transition: background 0.4s; }
-    .gallery-item:hover .gallery-item-overlay { background: rgba(74,98,117,0.4); }
-    .gallery-item-overlay svg { opacity: 0; transform: scale(0.7); transition: opacity 0.4s, transform 0.4s; }
+
+    /* Header text keeps side padding */
+    .gallery-header {
+      padding: 0 clamp(24px, 6vw, 80px);
+      max-width: var(--max-width);
+      margin: 0 auto 2.5rem;
+    }
+
+    /* Outer wrapper for positioning arrows */
+    .gallery-outer {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Arrow nav buttons — desktop only */
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(35, 50, 62, 0.72);
+      border: 1px solid rgba(214, 205, 149, 0.45);
+      color: var(--color-gold);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: background 0.3s, opacity 0.3s;
+    }
+    .gallery-arrow:hover { background: rgba(35, 50, 62, 0.95); }
+    .gallery-arrow.prev { left: 16px; }
+    .gallery-arrow.next { right: 16px; }
+    /* Fade out when at scroll boundary */
+    .gallery-arrow.hidden { opacity: 0; pointer-events: none; }
+
+    /* The scrollable track — single seamless row */
+    .gallery-track {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+
+    /* Each image cell */
+    .gallery-item {
+      flex: 0 0 auto;
+      height: clamp(240px, 36vw, 540px);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      background: #364f5e;
+      scroll-snap-align: start;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--transition-base), filter 0.6s;
+      filter: brightness(0.88) saturate(0.8);
+    }
+    .gallery-item:hover img { transform: scale(1.05); filter: brightness(1) saturate(1); }
+    .gallery-item-overlay {
+      position: absolute; inset: 0;
+      background: rgba(74,98,117,0);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.35s;
+    }
+    .gallery-item:hover .gallery-item-overlay { background: rgba(74,98,117,0.38); }
+    .gallery-item-overlay svg { opacity: 0; transform: scale(0.7); transition: opacity 0.35s, transform 0.35s; }
     .gallery-item:hover .gallery-item-overlay svg { opacity: 1; transform: scale(1); }
+
+    /* ── MOBILE: 2 columns × 2 rows, slides horizontally ─────── */
+    @media (max-width: 700px) {
+      .gallery-arrow { display: none; } /* touch-scroll on mobile */
+      .gallery-track {
+        display: grid;
+        /* 2 rows, each row = half the screen width (square cells) */
+        grid-template-rows: repeat(2, calc((100vw - 2px) / 2));
+        /* Each column = half screen width */
+        grid-auto-columns: calc((100vw - 2px) / 2);
+        /* Items flow into columns → creates 2-row layout that scrolls right */
+        grid-auto-flow: column;
+        scroll-snap-type: x mandatory;
+        height: calc(100vw); /* 2 rows of square cells + 1 gap */
+      }
+      .gallery-item {
+        height: 100%;
+        width: 100%;
+        aspect-ratio: unset;
+        scroll-snap-align: none; /* override desktop */
+      }
+      /* Snap at the start of every 2-column "page" (every 4th item) */
+      .gallery-item:nth-child(4n+1) {
+        scroll-snap-align: start;
+      }
+    }
 
     /* LIGHTBOX */
     #lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(20,30,38,0.96); align-items: center; justify-content: center; backdrop-filter: blur(8px); }
@@ -280,7 +383,6 @@
       nav { display: none; }
       #hamburger { display: flex; }
       #mobile-menu { display: flex; }
-      .gallery-grid { grid-template-columns: repeat(2,1fr); }
     }
   </style>
 </head>
@@ -368,17 +470,33 @@
   </section>
 
   <section id="gallery" class="section">
-    <div class="section-inner">
-      <div class="reveal">
-        <p class="section-label">Our Ever-Changing Showroom Floor</p>
-        <div class="gold-rule"></div>
-        <h2 class="section-title">Take a Look Inside the Gallery</h2>
-        <p class="section-body">Step inside Gertens Gallery — a space designed to inspire. Click any image for a closer look.</p>
-      </div>
-      <div class="gallery-grid reveal reveal-delay-2" id="gallery-grid">
-        <div style="padding:2rem"><div class="content-loading"></div></div>
-      </div>
+
+    <!-- Header text — keeps horizontal padding -->
+    <div class="gallery-header reveal">
+      <p class="section-label">Our Ever-Changing Showroom Floor</p>
+      <div class="gold-rule"></div>
+      <h2 class="section-title">Take a Look Inside the Gallery</h2>
+      <p class="section-body">Step inside Gertens Gallery — a space designed to inspire. Click any image for a closer look.</p>
     </div>
+
+    <!-- Full-width slider — edge to edge -->
+    <div class="gallery-outer">
+      <!-- Prev arrow -->
+      <button class="gallery-arrow prev hidden" id="gallery-prev" aria-label="Previous images">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <!-- Scrollable image track -->
+      <div class="gallery-track" id="gallery-grid">
+        <div style="padding:2rem;color:rgba(240,239,235,0.4)"><div class="content-loading"></div></div>
+      </div>
+
+      <!-- Next arrow -->
+      <button class="gallery-arrow next" id="gallery-next" aria-label="Next images">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
   </section>
 
   <div id="lightbox" role="dialog" aria-modal="true">
@@ -679,16 +797,16 @@
     }
 
     function buildGalleryGrid(imgs) {
-      const grid = document.getElementById('gallery-grid');
-      grid.innerHTML = '';
+      const track = document.getElementById('gallery-grid');
+      track.innerHTML = '';
+
       imgs.forEach((img, idx) => {
         const item = document.createElement('div');
-        item.className = 'gallery-item reveal';
-        item.style.transitionDelay = `${(idx % 8) * 0.06}s`;
+        item.className = 'gallery-item';
         item.innerHTML = `
           <img src="${img.url}" alt="${img.alt}" loading="lazy"/>
           <div class="gallery-item-overlay">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f0efeb" stroke-width="1.2">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f0efeb" stroke-width="1.2">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
               <line x1="11" y1="8" x2="11" y2="14"/>
@@ -696,8 +814,32 @@
             </svg>
           </div>`;
         item.addEventListener('click', () => openLightbox(idx));
-        grid.appendChild(item);
+        track.appendChild(item);
       });
+
+      // ── Arrow navigation ──────────────────────────────────────
+      const prevBtn = document.getElementById('gallery-prev');
+      const nextBtn = document.getElementById('gallery-next');
+
+      function updateArrows() {
+        const atStart = track.scrollLeft <= 4;
+        const atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+        prevBtn.classList.toggle('hidden', atStart);
+        nextBtn.classList.toggle('hidden', atEnd);
+      }
+
+      // Scroll by ~80% of visible width per click
+      prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -track.clientWidth * 0.8, behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: track.clientWidth * 0.8, behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', updateArrows, { passive: true });
+      // Initial state
+      updateArrows();
+
       observeReveal();
     }
 
