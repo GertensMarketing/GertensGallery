@@ -38,7 +38,7 @@
     /* SECTION */
     .section { padding: var(--section-pad) clamp(24px, 6vw, 80px); }
     .section-inner { max-width: var(--max-width); margin: 0 auto; }
-    .section-label { font-family: var(--font-body); font-weight: 400; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 1.2rem; }
+    .section-label { font-family: var(--font-body); font-weight: 400; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-main); margin-bottom: 1.2rem; }
     .section-title { font-family: var(--font-display); font-weight: 300; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.15; color: var(--color-main); margin-bottom: 1.5rem; }
     .section-body { font-size: clamp(0.95rem, 1.5vw, 1.05rem); color: var(--color-secondary); max-width: 640px; line-height: 1.85; }
     .gold-rule { width: 48px; height: 1px; background: var(--color-gold); margin-bottom: 2rem; }
@@ -232,7 +232,7 @@
     .hours-table td { padding: 14px 0; font-size: 0.88rem; color: var(--color-secondary); }
     .hours-table td:first-child { font-weight: 400; color: var(--color-main); letter-spacing: 0.05em; }
     .hours-table td:last-child { text-align: right; }
-    .hours-note { margin-top: 1.5rem; font-size: 0.78rem; letter-spacing: 0.08em; color: var(--color-gold); font-style: italic; }
+    .hours-note { margin-top: 1.5rem; font-size: 0.78rem; letter-spacing: 0.08em; color: var(--color-secondary); font-style: italic; }
     .hours-accent-block { background: var(--color-main); padding: 3rem; color: var(--color-bg); }
     .hours-accent-block .section-label { color: var(--color-gold); }
     .hours-accent-title { font-family: var(--font-display); font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 300; color: var(--color-bg); line-height: 1.3; margin-top: 0.5rem; margin-bottom: 1.5rem; }
@@ -628,7 +628,7 @@
 
           const hoursDisplay = openFmt
             ? `${openFmt} &ndash; ${closeFmt}`
-            : `<span style="color:var(--color-gold);letter-spacing:0.08em;font-size:0.78rem;">CLOSED</span>`;
+            : `<span style="color:var(--color-secondary);letter-spacing:0.08em;font-size:0.78rem;">Closed</span>`;
 
           const tr = document.createElement('tr');
           tr.innerHTML = `<td>${day}</td><td>${hoursDisplay}</td>`;
