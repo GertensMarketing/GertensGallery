@@ -104,7 +104,7 @@
 
         /* --- Transparent Top Navigation --- */
         .top-nav {
-            position: absolute;
+            position: fixed; /* Changed from absolute to fixed */
             top: 0;
             left: 0;
             width: 100%;
@@ -114,6 +114,16 @@
             align-items: center;
             z-index: 100;
             border-bottom: 1px solid rgba(240, 239, 235, 0.2);
+            transition: background-color 0.4s ease, backdrop-filter 0.4s ease, border-bottom-color 0.4s ease, padding 0.4s ease;
+        }
+
+        /* Scrolled state for the fixed navigation */
+        .top-nav.scrolled {
+            background-color: rgba(35, 45, 55, 0.85); /* Dark gray, slightly see-through */
+            backdrop-filter: blur(12px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom-color: transparent;
+            padding: 1rem 3rem; /* Shrinks slightly on scroll for elegance */
         }
 
         .nav-item {
@@ -156,6 +166,7 @@
         
         @media (max-width: 768px) {
             .top-nav { padding: 1.2rem 1.5rem; }
+            .top-nav.scrolled { padding: 0.8rem 1.5rem; }
             .nav-item span { display: none; } /* Hide text on mobile, keep icons */
             .nav-center { height: 35px; }
         }
@@ -193,6 +204,22 @@
             max-width: 1000px;
             padding: 0 2rem;
             margin-top: 5rem; /* Offset for nav */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-main-logo {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .hero-main-logo img, .hero-main-logo svg {
+            max-height: 250px;
+            max-width: 80vw;
+            object-fit: contain;
+            fill: var(--bg);
         }
 
         .hero h1 {
@@ -497,6 +524,12 @@
     <!-- Cinematic Hero Section -->
     <header class="hero" id="hero-section">
         <div class="hero-content fade-up">
+            <div id="hero-center-logo-container" class="hero-main-logo">
+                <!-- Fallback text/SVG logo if CSV empty -->
+                <svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+                    <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="36" font-weight="300" letter-spacing="8">GERTENS GALLERY</text>
+                </svg>
+            </div>
             <h1 id="hero-headline">[Headline Loading]</h1>
             <p id="hero-subheadline">[Subheadline Loading]</p>
         </div>
@@ -651,7 +684,13 @@
                 document.getElementById('hero-subheadline').textContent = dict['subheadline'] || dict['subtitle'] || 'Premium Hardscape & Landscaping Materials';
                 document.getElementById('about-title').textContent = dict['about title'] || dict['abouttitle'] || 'The Gallery Experience';
                 
-                const aboutTextRaw = dict['about text'] || dict['abouttext'];
+                let aboutTextRaw = dict['about text'] || dict['abouttext'];
+                
+                // Explicitly pull Cell B8 (Row index 7, Col index 1) if key is missing/different
+                if (!aboutTextRaw && contentData.length >= 8 && contentData[7].length >= 2) {
+                    aboutTextRaw = contentData[7][1]; 
+                }
+
                 if(aboutTextRaw) {
                     document.getElementById('about-text').innerHTML = aboutTextRaw.split('\n')
                         .filter(p => p.trim() !== '')
@@ -661,9 +700,17 @@
                 const logoKey = Object.keys(dict).find(k => k.includes('logo'));
                 if (logoKey && dict[logoKey]) {
                     const logoUrl = getDirectImageUrl(dict[logoKey]);
-                    const logoHtml = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 35px; object-fit: contain;">`;
-                    document.getElementById('nav-logo-container').innerHTML = logoHtml;
-                    document.getElementById('footer-logo-container').innerHTML = logoHtml;
+                    
+                    // Small logo for the Nav and Footer
+                    const logoHtmlSmall = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 35px; object-fit: contain;">`;
+                    // Larger logo for the center of the Hero section
+                    const logoHtmlLarge = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 250px; max-width: 80vw; object-fit: contain;">`;
+                    const logoHtmlFooter = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 50px; object-fit: contain;">`;
+                    
+                    document.getElementById('nav-logo-container').innerHTML = logoHtmlSmall;
+                    const heroLogoContainer = document.getElementById('hero-center-logo-container');
+                    if(heroLogoContainer) heroLogoContainer.innerHTML = logoHtmlLarge;
+                    document.getElementById('footer-logo-container').innerHTML = logoHtmlFooter;
                 }
             } catch (err) { console.error("Content error:", err); }
 
@@ -730,6 +777,16 @@
                 }
             });
         }, observerOptions);
+
+        // --- Nav Scroll Logic ---
+        const topNav = document.querySelector('.top-nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                topNav.classList.add('scrolled');
+            } else {
+                topNav.classList.remove('scrolled');
+            }
+        });
 
         // --- Slider Navigation Logic ---
         const sliderViewport = document.getElementById('slider-viewport');
