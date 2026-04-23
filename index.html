@@ -358,10 +358,7 @@
     #booking .section-label { color: var(--color-gold); }
     .booking-inner { max-width: 800px; margin: 0 auto; text-align: center; }
     .booking-inner .section-body { margin: 0 auto 3rem; }
-    .calendly-placeholder { width: 100%; min-height: 360px; border: 1px dashed rgba(214,205,149,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 3rem; background: rgba(74,98,117,0.3); }
-    .calendly-placeholder .ph-icon { width: 48px; height: 48px; border: 1px solid rgba(214,205,149,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .calendly-placeholder .ph-label { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-gold); opacity: 0.7; }
-    .calendly-placeholder .ph-desc { font-size: 0.82rem; color: rgba(240,239,235,0.35); text-align: center; max-width: 320px; }
+
 
     /* FOOTER */
     #footer { background: #2a3a45; padding: 60px clamp(24px,6vw,80px); text-align: center; }
@@ -554,14 +551,10 @@
           <h2 class="section-title">Interested in Visiting the Gallery?</h2>
           <p class="section-body">Book your appointment below. Our team will confirm your visit and prepare a personalized experience tailored to your project.</p>
         </div>
-        <!-- Replace this entire block with your Calendly embed snippet when ready -->
-        <div class="calendly-placeholder reveal reveal-delay-2">
-          <div class="ph-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d6cd95" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-          <p class="ph-label">Calendly Booking Widget</p>
-          <p class="ph-desc">Embed code coming soon — replace this block with your Calendly inline embed snippet.</p>
-        </div>
+        <!-- Calendly inline widget begin -->
+        <div class="calendly-inline-widget reveal reveal-delay-2" data-url="https://calendly.com/colson-gertens/30min" style="min-width:320px;height:700px;"></div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+        <!-- Calendly inline widget end -->
       </div>
     </div>
   </section>
