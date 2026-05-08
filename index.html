@@ -64,8 +64,8 @@
     /* Desktop nav links */
     nav a { font-family: var(--font-body); font-weight: 300; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-bg); margin-left: 2.5rem; opacity: 0.8; transition: opacity 0.3s; }
     nav a:hover { opacity: 1; }
-    .nav-cta { border: 1px solid var(--color-gold) !important; padding: 8px 20px; opacity: 1 !important; color: var(--color-gold) !important; transition: background 0.3s, color 0.3s !important; }
-    .nav-cta:hover { background: var(--color-gold) !important; color: var(--color-main) !important; }
+    .nav-cta { border: 1px solid var(--color-bg) !important; padding: 8px 20px; opacity: 1 !important; color: var(--color-bg) !important; transition: background 0.3s, color 0.3s !important; }
+    .nav-cta:hover { background: var(--color-bg) !important; color: var(--color-main) !important; }
 
     /* Hamburger button — mobile only */
     #hamburger {
@@ -128,14 +128,14 @@
     #mobile-menu a:hover { opacity: 1; color: var(--color-gold); }
     #mobile-menu .mob-cta {
       margin-top: 2rem;
-      border: 1px solid var(--color-gold) !important;
+      border: 1px solid var(--color-bg) !important;
       padding: 14px 0;
       text-align: center;
-      color: var(--color-gold) !important;
+      color: var(--color-bg) !important;
       opacity: 1 !important;
-      border-bottom: 1px solid var(--color-gold) !important;
+      border-bottom: 1px solid var(--color-bg) !important;
     }
-    #mobile-menu .mob-cta:hover { background: var(--color-gold); color: var(--color-main) !important; }
+    #mobile-menu .mob-cta:hover { background: var(--color-bg); color: var(--color-main) !important; }
 
     /* HERO */
     #hero { position: relative; width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background-color: var(--color-main); }
@@ -176,8 +176,8 @@
 
     .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom,transparent,var(--color-gold),transparent); margin: 0 auto 2.5rem; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
     .hero-headline { font-family: var(--font-display); font-weight: 300; font-size: clamp(1.1rem,2.5vw,1.6rem); color: var(--color-bg); opacity: 0; animation: fadeUp 1s 1.1s forwards; line-height: 1.6; max-width: 600px; margin: 0 auto 2.5rem; }
-    .hero-cta { display: inline-block; padding: 14px 44px; border: 1px solid var(--color-gold); font-family: var(--font-body); font-weight: 400; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-gold); transition: background 0.4s, color 0.4s; opacity: 0; animation: fadeUp 1s 1.3s forwards; }
-    .hero-cta:hover { background: var(--color-gold); color: var(--color-main); }
+    .hero-cta { display: inline-block; padding: 14px 44px; border: 1px solid var(--color-bg); font-family: var(--font-body); font-weight: 400; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-bg); transition: background 0.4s, color 0.4s; opacity: 0; animation: fadeUp 1s 1.3s forwards; }
+    .hero-cta:hover { background: var(--color-bg); color: var(--color-main); }
     .hero-scroll-hint { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 1s 2s forwards; }
     .hero-scroll-hint span { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(230, 226, 224,0.45); }
     .scroll-line { width: 1px; height: 40px; background: var(--color-gold); animation: scrollPulse 2s ease-in-out infinite; }
@@ -340,8 +340,8 @@
     .hours-accent-block .section-label { color: var(--color-gold); }
     .hours-accent-title { font-family: var(--font-display); font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 300; color: var(--color-bg); line-height: 1.3; margin-top: 0.5rem; margin-bottom: 1.5rem; }
     .hours-accent-body { font-size: 0.88rem; color: rgba(230, 226, 224,0.65); line-height: 1.85; }
-    .hours-book-btn { display: inline-block; margin-top: 1.8rem; padding: 11px 30px; border: 1px solid var(--color-gold); font-family: var(--font-body); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold); transition: background 0.3s, color 0.3s; }
-    .hours-book-btn:hover { background: var(--color-gold); color: var(--color-main); }
+    .hours-book-btn { display: inline-block; margin-top: 1.8rem; padding: 11px 30px; border: 1px solid var(--color-bg); font-family: var(--font-body); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-bg); transition: background 0.3s, color 0.3s; }
+    .hours-book-btn:hover { background: var(--color-bg); color: var(--color-main); }
     /* Map sits flush below the hours content — no gap */
     #location { background: var(--color-bg); }
     .map-wrapper { position: relative; width: 100%; height: clamp(300px,45vw,540px); overflow: hidden; filter: grayscale(30%) contrast(1.05); margin-top: clamp(40px,6vw,80px); }
