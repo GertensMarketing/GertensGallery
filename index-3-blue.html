@@ -1,1 +1,928 @@
-a
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gertens Gallery: A Hardscape Showroom</title>
+  <!-- Favicon: set dynamically from CSV B7 -->
+  <link rel="icon" id="favicon" type="image/png" href="https://gertensgallery.netlify.app/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-main:      #4a6275;
+      --color-bg:        #f0efeb;
+      --color-secondary: #756f6a;
+      --color-gold:      #d6cd95;
+      --color-highlight: #79b6d8;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Jost', sans-serif;
+      --transition-base: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      --section-pad: clamp(80px, 10vw, 140px);
+      --max-width: 1200px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background-color: var(--color-bg); color: var(--color-main); font-family: var(--font-body); font-weight: 300; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s var(--transition-base), transform 0.8s var(--transition-base); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.22s; }
+    .reveal-delay-3 { transition-delay: 0.36s; }
+
+    /* SECTION */
+    .section { padding: var(--section-pad) clamp(24px, 6vw, 80px); }
+    .section-inner { max-width: var(--max-width); margin: 0 auto; }
+    .section-label { font-family: var(--font-body); font-weight: 400; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-main); margin-bottom: 1.2rem; }
+    .section-title { font-family: var(--font-display); font-weight: 300; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.15; color: var(--color-main); margin-bottom: 1.5rem; }
+    .section-body { font-size: clamp(0.95rem, 1.5vw, 1.05rem); color: var(--color-secondary); max-width: 640px; line-height: 1.85; }
+    .gold-rule { width: 48px; height: 1px; background: var(--color-gold); margin-bottom: 2rem; }
+
+    /* NAV */
+    #site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 200; padding: 18px clamp(24px, 6vw, 80px); display: flex; align-items: center; justify-content: space-between; transition: background 0.5s ease, box-shadow 0.5s ease; }
+    #site-header.scrolled { background: rgba(74,98,117,0.96); box-shadow: 0 1px 0 rgba(214,205,149,0.15); backdrop-filter: blur(12px); }
+
+    /* Nav logo: hidden at top, fades in once hero logo scrolls out of view */
+    #nav-logo-img {
+      height: 38px; width: auto; object-fit: contain; display: block;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    #nav-logo-img.logo-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #nav-logo-text { display: none; }
+    #nav-logo-text span { font-weight: 300; font-style: italic; color: var(--color-gold); }
+
+    /* Desktop nav links */
+    nav a { font-family: var(--font-body); font-weight: 300; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-bg); margin-left: 2.5rem; opacity: 0.8; transition: opacity 0.3s; }
+    nav a:hover { opacity: 1; }
+    .nav-cta { border: 1px solid var(--color-gold) !important; padding: 8px 20px; opacity: 1 !important; color: var(--color-gold) !important; transition: background 0.3s, color 0.3s !important; }
+    .nav-cta:hover { background: var(--color-gold) !important; color: var(--color-main) !important; }
+
+    /* Hamburger button — mobile only */
+    #hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 200;
+    }
+    #hamburger span {
+      display: block;
+      width: 100%;
+      height: 1.5px;
+      background: #d6cd95;
+      border-radius: 2px;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+      transform-origin: center;
+    }
+    /* Animate to X when open */
+    #hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    #hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    #hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile dropdown menu */
+    #mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(74, 98, 117, 0.98);
+      backdrop-filter: blur(16px);
+      z-index: 150;
+      padding: 90px 40px 48px;
+      flex-direction: column;
+      gap: 0;
+      transform: translateY(-100%);
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #mobile-menu.open {
+      transform: translateY(0);
+    }
+    #mobile-menu a {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-bg);
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(214, 205, 149, 0.12);
+      opacity: 0.85;
+      transition: opacity 0.3s, color 0.3s;
+    }
+    #mobile-menu a:last-child { border-bottom: none; }
+    #mobile-menu a:hover { opacity: 1; color: var(--color-gold); }
+    #mobile-menu .mob-cta {
+      margin-top: 2rem;
+      border: 1px solid var(--color-gold) !important;
+      padding: 14px 0;
+      text-align: center;
+      color: var(--color-gold) !important;
+      opacity: 1 !important;
+      border-bottom: 1px solid var(--color-gold) !important;
+    }
+    #mobile-menu .mob-cta:hover { background: var(--color-gold); color: var(--color-main) !important; }
+
+    /* HERO */
+    #hero { position: relative; width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background-color: var(--color-main); }
+    #mosaic-bg { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(6,1fr); grid-template-rows: repeat(4,1fr); gap: 3px; z-index: 0; }
+    .mosaic-cell { overflow: hidden; }
+    .mosaic-cell img { width: 100%; height: 100%; object-fit: cover; filter: blur(1px) brightness(0.55) saturate(0.7); transform: scale(1.06); }
+    #hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg,rgba(74,98,117,0.72) 0%,rgba(40,55,65,0.88) 60%,rgba(74,98,117,0.65) 100%); z-index: 1; }
+    #hero::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); background-size: 200px 200px; opacity: 0.18; z-index: 2; pointer-events: none; }
+
+    .hero-content { position: relative; z-index: 3; text-align: center; padding: 0 clamp(24px, 8vw, 100px); max-width: 860px; }
+    .hero-eyebrow { font-family: var(--font-body); font-weight: 300; font-size: 0.68rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 1s 0.3s forwards; }
+
+    /*
+      HERO LOGO IMAGE — pulled from CSV B6 (row index 5, column index 1).
+      Tinted to off-white via CSS filter so it reads on the dark mosaic.
+      If the URL is empty or broken, #hero-logo-fallback text appears instead.
+    */
+    #hero-logo-img {
+      max-width: clamp(200px, 44vw, 480px);
+      max-height: 210px;
+      width: auto; height: auto;
+      object-fit: contain;
+
+      margin: 0 auto 3rem;
+      display: block;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+    #hero-logo-fallback {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      letter-spacing: 0.08em; color: var(--color-bg);
+      line-height: 1; text-transform: uppercase;
+      margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 1s 0.5s forwards;
+      display: none;
+    }
+
+    .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom,transparent,var(--color-gold),transparent); margin: 0 auto 2.5rem; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
+    .hero-headline { font-family: var(--font-display); font-weight: 300; font-size: clamp(1.1rem,2.5vw,1.6rem); color: var(--color-bg); opacity: 0; animation: fadeUp 1s 1.1s forwards; line-height: 1.6; max-width: 600px; margin: 0 auto 2.5rem; }
+    .hero-cta { display: inline-block; padding: 14px 44px; border: 1px solid var(--color-gold); font-family: var(--font-body); font-weight: 400; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-gold); transition: background 0.4s, color 0.4s; opacity: 0; animation: fadeUp 1s 1.3s forwards; }
+    .hero-cta:hover { background: var(--color-gold); color: var(--color-main); }
+    .hero-scroll-hint { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 1s 2s forwards; }
+    .hero-scroll-hint span { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(240,239,235,0.45); }
+    .scroll-line { width: 1px; height: 40px; background: var(--color-gold); animation: scrollPulse 2s ease-in-out infinite; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* ABOUT */
+    #about { background: var(--color-bg); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,6vw,100px); align-items: center; }
+    .about-stat { border-top: 1px solid var(--color-gold); padding-top: 1.5rem; margin-top: 3rem; }
+    .about-stat-num { font-family: var(--font-display); font-size: 3rem; font-weight: 300; color: var(--color-main); line-height: 1; }
+    .about-stat-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-secondary); margin-top: 6px; }
+    .about-img-wrapper { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--color-main); }
+    .about-img-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85) brightness(0.95); transition: transform 0.8s var(--transition-base), filter 0.8s; }
+    .about-img-wrapper:hover img { transform: scale(1.04); filter: saturate(1) brightness(1); }
+    .about-img-frame { position: absolute; inset: 16px; border: 1px solid rgba(214,205,149,0.35); pointer-events: none; z-index: 1; }
+
+    /* GALLERY — horizontal slider */
+    #gallery {
+      background: var(--color-main);
+      color: var(--color-bg);
+      /* Remove side padding so track goes edge-to-edge */
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: 0;
+    }
+    #gallery .section-title { color: var(--color-bg); }
+    #gallery .section-body  { color: rgba(240,239,235,0.65); }
+    #gallery .section-label { color: var(--color-gold); }
+
+    /* Header text keeps side padding */
+    .gallery-header {
+      padding: 0 clamp(24px, 6vw, 80px);
+      max-width: var(--max-width);
+      margin: 0 auto 2.5rem;
+    }
+
+    /* Outer wrapper for positioning arrows */
+    .gallery-outer {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Arrow nav buttons — desktop only */
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(35, 50, 62, 0.72);
+      border: 1px solid rgba(214, 205, 149, 0.45);
+      color: var(--color-gold);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: background 0.3s, opacity 0.3s;
+    }
+    .gallery-arrow:hover { background: rgba(35, 50, 62, 0.95); }
+    .gallery-arrow.prev { left: 16px; }
+    .gallery-arrow.next { right: 16px; }
+    /* Fade out when at scroll boundary */
+    .gallery-arrow.hidden { opacity: 0; pointer-events: none; }
+
+    /* The scrollable track — single seamless row */
+    .gallery-track {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+
+    /* Each image cell */
+    .gallery-item {
+      flex: 0 0 auto;
+      height: clamp(240px, 36vw, 540px);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      background: #364f5e;
+      scroll-snap-align: start;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--transition-base), filter 0.6s;
+      filter: brightness(0.88) saturate(0.8);
+    }
+    .gallery-item:hover img { transform: scale(1.05); filter: brightness(1) saturate(1); }
+    .gallery-item-overlay {
+      position: absolute; inset: 0;
+      background: rgba(74,98,117,0);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.35s;
+    }
+    .gallery-item:hover .gallery-item-overlay { background: rgba(74,98,117,0.38); }
+    .gallery-item-overlay svg { opacity: 0; transform: scale(0.7); transition: opacity 0.35s, transform 0.35s; }
+    .gallery-item:hover .gallery-item-overlay svg { opacity: 1; transform: scale(1); }
+
+    /* ── MOBILE: 2 columns × 2 rows, slides horizontally ─────── */
+    @media (max-width: 700px) {
+      .gallery-arrow { display: none; } /* touch-scroll on mobile */
+      .gallery-track {
+        display: grid;
+        /* 2 rows, each row = half the screen width (square cells) */
+        grid-template-rows: repeat(2, calc((100vw - 2px) / 2));
+        /* Each column = half screen width */
+        grid-auto-columns: calc((100vw - 2px) / 2);
+        /* Items flow into columns → creates 2-row layout that scrolls right */
+        grid-auto-flow: column;
+        scroll-snap-type: x mandatory;
+        height: calc(100vw); /* 2 rows of square cells + 1 gap */
+      }
+      .gallery-item {
+        height: 100%;
+        width: 100%;
+        aspect-ratio: unset;
+        scroll-snap-align: none; /* override desktop */
+      }
+      /* Snap at the start of every 2-column "page" (every 4th item) */
+      .gallery-item:nth-child(4n+1) {
+        scroll-snap-align: start;
+      }
+    }
+
+    /* LIGHTBOX */
+    #lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(20,30,38,0.96); align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+    #lightbox.open { display: flex; }
+    .lightbox-inner { max-width: min(90vw,1100px); max-height: 90vh; display: flex; align-items: center; justify-content: center; }
+    #lightbox-img { max-width: 100%; max-height: 85vh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,0.5); }
+    .lb-btn { position: fixed; top: 50%; transform: translateY(-50%); background: none; border: 1px solid rgba(214,205,149,0.4); color: var(--color-gold); cursor: pointer; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; transition: border-color 0.3s, background 0.3s; z-index: 1001; }
+    .lb-btn:hover { background: rgba(214,205,149,0.12); border-color: var(--color-gold); }
+    #lb-prev { left: clamp(12px,3vw,40px); }
+    #lb-next { right: clamp(12px,3vw,40px); }
+    #lb-close { position: fixed; top: 24px; right: 24px; background: none; border: 1px solid rgba(214,205,149,0.4); color: var(--color-gold); cursor: pointer; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: border-color 0.3s, background 0.3s; z-index: 1001; }
+    #lb-close:hover { background: rgba(214,205,149,0.12); }
+    #lb-counter { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; letter-spacing: 0.3em; color: rgba(240,239,235,0.45); z-index: 1001; }
+
+    /* HOURS & LOCATION (combined section) */
+    #hours { background: var(--color-bg); padding-bottom: var(--section-pad); }
+    /* Blue box LEFT, hours table RIGHT — swapped from original */
+    .hours-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,6vw,80px); margin-top: 3rem; align-items: start; }
+    .hours-table { width: 100%; border-collapse: collapse; }
+    .hours-table tr { border-bottom: 1px solid rgba(74,98,117,0.1); }
+    .hours-table tr:last-child { border-bottom: none; }
+    .hours-table td { padding: 14px 0; font-size: 0.88rem; color: var(--color-secondary); }
+    .hours-table td:first-child { font-weight: 400; color: var(--color-main); letter-spacing: 0.05em; }
+    .hours-table td:last-child { text-align: right; }
+    .hours-note { margin-top: 1.5rem; font-size: 0.78rem; letter-spacing: 0.08em; color: var(--color-secondary); font-style: italic; }
+    .hours-accent-block { background: var(--color-main); padding: 3rem; color: var(--color-bg); }
+    .hours-accent-block .section-label { color: var(--color-gold); }
+    .hours-accent-title { font-family: var(--font-display); font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 300; color: var(--color-bg); line-height: 1.3; margin-top: 0.5rem; margin-bottom: 1.5rem; }
+    .hours-accent-body { font-size: 0.88rem; color: rgba(240,239,235,0.65); line-height: 1.85; }
+    .hours-book-btn { display: inline-block; margin-top: 1.8rem; padding: 11px 30px; border: 1px solid var(--color-gold); font-family: var(--font-body); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold); transition: background 0.3s, color 0.3s; }
+    .hours-book-btn:hover { background: var(--color-gold); color: var(--color-main); }
+    /* Map sits flush below the hours content — no gap */
+    #location { background: var(--color-bg); }
+    .map-wrapper { position: relative; width: 100%; height: clamp(300px,45vw,540px); overflow: hidden; filter: grayscale(30%) contrast(1.05); margin-top: clamp(40px,6vw,80px); }
+    .map-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
+    @media (max-width: 768px) {
+      /* On mobile: blue box stacks ABOVE the hours table */
+      .hours-grid { grid-template-columns: 1fr; }
+    }
+
+    /* BOOKING */
+    #booking { background: var(--color-main); color: var(--color-bg); }
+    #booking .section-title { color: var(--color-bg); }
+    #booking .section-body  { color: rgba(240,239,235,0.65); }
+    #booking .section-label { color: var(--color-gold); }
+    .booking-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+    .booking-inner .section-body { margin: 0 auto 3rem; }
+
+
+    /* FOOTER */
+    #footer { background: #2a3a45; padding: 60px clamp(24px,6vw,80px); text-align: center; }
+    #footer-logo-img { height: 100px; width: auto; object-fit: contain; margin: 0 auto 0.8rem; display: block; }
+    #footer-logo-text { display: none; }
+    #footer-logo-text span { font-style: italic; color: var(--color-gold); font-weight: 300; }
+    .footer-tagline { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(240,239,235,0.3); margin-bottom: 2rem; }
+    .footer-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2rem; margin-bottom: 2.5rem; }
+    .footer-links a { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(240,239,235,0.4); transition: color 0.3s; }
+    .footer-links a:hover { color: var(--color-gold); }
+    .footer-divider { width: 1px; height: 20px; background: rgba(240,239,235,0.12); }
+    .footer-copy { font-size: 0.68rem; color: rgba(240,239,235,0.2); letter-spacing: 0.1em; }
+
+    .content-loading { display: inline-block; width: 32px; height: 2px; background: var(--color-gold); animation: loadPulse 1.4s ease-in-out infinite; border-radius: 2px; }
+    @keyframes loadPulse { 0%,100%{opacity:0.2;transform:scaleX(0.5)} 50%{opacity:1;transform:scaleX(1)} }
+
+    @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } .about-img-wrapper { aspect-ratio: 4/3; } }
+    @media (max-width: 700px) {
+      nav { display: none; }
+      #hamburger { display: flex; }
+      #mobile-menu { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile fullscreen menu (slides down from top) -->
+  <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="#about"   onclick="closeMobileMenu()">About</a>
+    <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+    <a href="#hours"   onclick="closeMobileMenu()">Hours</a>
+    <a href="#location" onclick="closeMobileMenu()">Location</a>
+    <a href="#booking"  onclick="closeMobileMenu()" class="mob-cta">Book a Visit</a>
+  </div>
+
+  <header id="site-header">
+    <!-- Logo: invisible at top, fades in as user scrolls past the hero logo -->
+    <img id="nav-logo-img"
+         src="https://gertensgallery.netlify.app/images/GertensGallery_white-top.png"
+         alt="Gertens Gallery" />
+    <div id="nav-logo-text">Gertens <span>Gallery</span></div>
+
+    <!-- Desktop navigation -->
+    <nav>
+      <a href="#about">About</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#hours">Hours</a>
+      <a href="#location">Location</a>
+      <a href="#booking" class="nav-cta">Book a Visit</a>
+    </nav>
+
+    <!-- Hamburger: mobile only -->
+    <button id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <section id="hero">
+    <div id="mosaic-bg"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow" id="hero-eyebrow">Now Open in Eden Prairie</p>
+
+      <!--
+        Logo image: src is set by JS from cell B6 of the Homepage Content CSV.
+        B6 = raw grid row index 5, column index 1.
+        The CSS filter tints it to the off-white palette color so it reads
+        cleanly against the dark mosaic background.
+        If the URL is missing or broken, the fallback h1 appears instead.
+      -->
+      <img id="hero-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white.png" alt="Gertens Gallery" />
+      <h1 id="hero-logo-fallback">Gertens Gallery</h1>
+
+      <div class="hero-divider"></div>
+      <p class="hero-headline" id="hero-headline">A curated showroom experience for pavers, natural stone, porcelain, and hardscape artistry — now open to design professionals and homeowners alike.</p>
+      <a href="#booking" class="hero-cta">Book Your Private Visit</a>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Explore</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="section-inner about-grid">
+      <div>
+        <div class="reveal">
+          <p class="section-label">A New Kind of Showroom</p>
+          <div class="gold-rule"></div>
+          <h2 class="section-title" id="about-title">Where Hardscape Meets Artistry</h2>
+        </div>
+        <p class="section-body reveal reveal-delay-1" id="about-body">Gertens Gallery showcases a curated selection of natural stone, porcelain, and concrete products designed for exceptional landscapes.<br><br>Inspired by the world's greatest artist—Mother Nature—our collection highlights materials that blend beauty, durability, and timeless design.<br><br>Located in the heart of the Twin Cities' Golden Triangle in Eden Prairie, Gertens Gallery offers a private showroom experience by appointment.<br><br>Our team of industry mavens specializes in guiding contractors, designers, and homeowners through the landscape product selection process with expertise and intention.</p>
+        <div class="about-stat reveal reveal-delay-2">
+          <div class="about-stat-num" id="stat-num">50+</div>
+          <div class="about-stat-label" id="stat-label">Curated Material Collections on Display</div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="about-img-wrapper">
+          <div class="about-img-frame"></div>
+          <img id="about-img-el" src="" alt="Gertens Gallery Interior" style="opacity:0;transition:opacity 0.6s;" onload="this.style.opacity=1" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="section">
+
+    <!-- Header text — keeps horizontal padding -->
+    <div class="gallery-header reveal">
+      <p class="section-label">Our Ever-Changing Showroom Floor</p>
+      <div class="gold-rule"></div>
+      <h2 class="section-title">Take a Look Inside the Gallery</h2>
+      <p class="section-body">Step inside Gertens Gallery — a space designed to inspire. Click any image for a closer look.</p>
+    </div>
+
+    <!-- Full-width slider — edge to edge -->
+    <div class="gallery-outer">
+      <!-- Prev arrow -->
+      <button class="gallery-arrow prev hidden" id="gallery-prev" aria-label="Previous images">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <!-- Scrollable image track -->
+      <div class="gallery-track" id="gallery-grid">
+        <div style="padding:2rem;color:rgba(240,239,235,0.4)"><div class="content-loading"></div></div>
+      </div>
+
+      <!-- Next arrow -->
+      <button class="gallery-arrow next" id="gallery-next" aria-label="Next images">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+  </section>
+
+  <div id="lightbox" role="dialog" aria-modal="true">
+    <button id="lb-close">&#10005;</button>
+    <button class="lb-btn" id="lb-prev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="lightbox-inner"><img id="lightbox-img" src="" alt="" /></div>
+    <button class="lb-btn" id="lb-next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <div id="lb-counter"></div>
+  </div>
+
+  <!-- Hours & Location combined — single section -->
+  <section id="hours" class="section">
+    <div class="section-inner">
+      <div class="reveal">
+        <p class="section-label">Visit Us</p>
+        <div class="gold-rule"></div>
+        <h2 class="section-title">Hours &amp; Location</h2>
+        <p class="section-body" id="location-address">9715 Valley View Rd, Eden Prairie, Minnesota</p>
+      </div>
+      <div class="hours-grid">
+
+        <!-- Blue accent block — LEFT on desktop, stacks ABOVE on mobile -->
+        <div class="reveal reveal-delay-1">
+          <div class="hours-accent-block">
+            <p class="section-label">By Appointment Only</p>
+            <h3 class="hours-accent-title">A private, guided experience awaits you</h3>
+            <p class="hours-accent-body">Book a private appointment and receive a curated walkthrough of our materials, samples, and project inspiration. Walk-ins welcome during open hours.</p>
+            <a href="#booking" class="hours-book-btn">Book a Visit</a>
+          </div>
+        </div>
+
+        <!-- Hours table — RIGHT on desktop, stacks BELOW on mobile -->
+        <div>
+          <table class="hours-table reveal reveal-delay-2" id="hours-table">
+            <tbody><tr><td colspan="2"><div class="content-loading"></div></td></tr></tbody>
+          </table>
+          <p class="hours-note reveal reveal-delay-3">* Hours subject to seasonal changes. Appointments recommended.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Map flush below hours content, no separate section header -->
+    <div id="location" class="map-wrapper reveal">
+      <iframe src="https://maps.google.com/maps?q=9715+Valley+View+Rd,+Eden+Prairie,+Minnesota&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Gertens Gallery Location"></iframe>
+    </div>
+  </section>
+
+  <section id="booking" class="section">
+    <div class="section-inner">
+      <div class="booking-inner">
+        <div class="reveal">
+          <p class="section-label">Schedule Your Visit</p>
+          <div class="gold-rule" style="margin:0 auto 2rem;"></div>
+          <h2 class="section-title">Interested in Visiting the Gallery?</h2>
+          <p class="section-body">Book your appointment below. Our team will confirm your visit and prepare a personalized experience tailored to your project.</p>
+        </div>
+        <!-- Calendly inline widget begin -->
+        <div class="calendly-inline-widget reveal reveal-delay-2" data-url="https://calendly.com/colson-gertens/30min" style="min-width:320px;height:700px;"></div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+        <!-- Calendly inline widget end -->
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <img id="footer-logo-img" src="https://gertensgallery.netlify.app/images/GertensGallery_white.png" alt="Gertens Gallery" />
+    <div id="footer-logo-text">Gertens <span>Gallery</span></div>
+    <p class="footer-tagline">A Gertens Experience &mdash; Hardscape &amp; Landscape Artistry</p>
+    <div class="footer-links">
+      <a href="#about">About</a><div class="footer-divider"></div>
+      <a href="#gallery">Gallery</a><div class="footer-divider"></div>
+      <a href="#hours">Hours</a><div class="footer-divider"></div>
+      <a href="#location">Location</a><div class="footer-divider"></div>
+      <a href="#booking">Book a Visit</a><div class="footer-divider"></div>
+      <a href="https://gertens.com" target="_blank" rel="noopener">Gertens.com</a>
+    </div>
+    <p class="footer-copy">&copy; <span id="footer-year"></span> Gertens. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // ── CSV Parsing (state-machine — handles multi-line quoted fields) ──
+    // Splits the raw CSV text into a 2D array of rows × columns,
+    // correctly handling fields that contain embedded newlines (like About Us).
+    function parseCSVProper(text) {
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQuotes) {
+          if (ch === '"' && text[i + 1] === '"') { field += '"'; i++; } // escaped ""
+          else if (ch === '"') { inQuotes = false; }
+          else { field += ch; } // embedded newline stays in field
+        } else {
+          if      (ch === '"')  { inQuotes = true; }
+          else if (ch === ',')  { row.push(field.trim()); field = ''; }
+          else if (ch === '\r') { /* skip CR */ }
+          else if (ch === '\n') { row.push(field.trim()); rows.push(row); row = []; field = ''; }
+          else { field += ch; }
+        }
+      }
+      row.push(field.trim());
+      if (row.some(f => f !== '')) rows.push(row);
+      return rows;
+    }
+    // Returns 2D grid for direct cell access (e.g. grid[5][1] = B6)
+    function parseCSVGrid(text) { return parseCSVProper(text); }
+    // Returns array of objects keyed by first-row headers
+    function parseCSV(text) {
+      const grid = parseCSVProper(text);
+      if (grid.length < 2) return [];
+      const headers = grid[0];
+      return grid.slice(1).map(vals => {
+        const obj = {};
+        headers.forEach((h, i) => { obj[h] = vals[i] || ''; });
+        return obj;
+      });
+    }
+    async function fetchText(url) {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('Fetch failed: ' + url);
+      return r.text();
+    }
+
+    // ── CSV URLs ─────────────────────────────────────────────────
+    const CSV_HOME   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=0&single=true&output=csv';
+    const CSV_HOURS  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=1768246174&single=true&output=csv';
+    const CSV_IMAGES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=1576387379&single=true&output=csv';
+
+    // Logo is hardcoded in HTML — no JS needed
+
+    // ── Homepage content ─────────────────────────────────────────
+    async function loadHome() {
+      try {
+        const raw  = await fetchText(CSV_HOME);
+
+        const grid = parseCSVGrid(raw);
+
+        // ── B6: Hero logo (hardcoded in HTML, no JS needed) ──────
+        // src already set directly on #hero-logo-img and #footer-logo-img
+
+        // ── B7: Favicon ──────────────────────────────────────────
+        // Spreadsheet row 7, column B = grid[6][1] (0-indexed)
+        const faviconUrl = grid[6] && grid[6][1] ? grid[6][1].trim() : '';
+        if (faviconUrl) {
+          const faviconEl = document.getElementById('favicon');
+          if (faviconEl) faviconEl.href = faviconUrl;
+        }
+
+        // ── B9: Navigation bar logo ───────────────────────────────
+        // Spreadsheet row 9, column B = grid[8][1] (0-indexed)
+        const navLogoUrl = grid[8] && grid[8][1] ? grid[8][1].trim() : '';
+        if (navLogoUrl) {
+          const navImg = document.getElementById('nav-logo-img');
+          if (navImg) navImg.src = navLogoUrl;
+        }
+
+
+        // ── Parse CSV using correct column names: "Website Section" / "Info or Link" ──
+        // Build a lookup: { "Address:": "9715 Valley View...", "Logo": "https://..." }
+        const rows = parseCSV(raw);
+        const d = {};
+        rows.forEach(r => {
+          // Column A = "Website Section", Column B = "Info or Link"
+          const k = r['Website Section'] || r['website section'] || '';
+          const v = r['Info or Link']    || r['info or link']    || '';
+          if (k) d[k] = v;
+        });
+
+        // Helper setters — only override if CSV value exists
+        const set  = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+        const setH = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML   = val; };
+
+        // Content fields
+        if (d['Page Title'])            document.title = d['Page Title'];
+        if (d['Address:'])              set('location-address', d['Address:']);
+        if (d['About Us'])              setH('about-body', d['About Us'].replace(/\n/g, '<br><br>'));
+        if (d['Top SubHeader'])         set('hero-eyebrow',  d['Top SubHeader']);
+        if (d['Top Headline'])          set('hero-headline', d['Top Headline']);
+
+        // Images — override hardcoded src only if CSV value differs
+        if (d['Navigation logo']) {
+          const navImg = document.getElementById('nav-logo-img');
+          if (navImg) navImg.src = d['Navigation logo'];
+        }
+        if (d['Logo']) {
+          const heroImg   = document.getElementById('hero-logo-img');
+          const footerImg = document.getElementById('footer-logo-img');
+          if (heroImg)   heroImg.src   = d['Logo'];
+          if (footerImg) footerImg.src = d['Logo'];
+        }
+        if (d['Favicon']) {
+          const fav = document.getElementById('favicon');
+          if (fav) fav.href = d['Favicon'];
+        }
+        if (d['About Us Background']) {
+          const aboutImg = document.getElementById('about-img-el');
+          if (aboutImg) aboutImg.src = d['About Us Background'];
+        }
+        if (d['Google Maps Link']) {
+          const mapFrame = document.querySelector('.map-wrapper iframe');
+          if (mapFrame) {
+            const addr = d['Address:'] || '9715 Valley View Rd, Eden Prairie, Minnesota';
+            mapFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(addr) + '&output=embed';
+          }
+        }
+        set('footer-copy',     d.footer_copy);
+      } catch (err) {
+        console.warn('Homepage CSV failed — defaults shown.', err);
+      }
+    }
+
+    // ── Hours ────────────────────────────────────────────────────
+    async function loadHours() {
+      const tbody = document.querySelector('#hours-table tbody');
+      try {
+        const rows = parseCSV(await fetchText(CSV_HOURS));
+        tbody.innerHTML = '';
+        rows.forEach(r => {
+          const day   = r.Day   || r.day   || Object.values(r)[0] || '';
+          const open  = r.Open  || r.open  || Object.values(r)[1] || '';
+          const close = r.Close || r.close || Object.values(r)[2] || '';
+          if (!day) return;
+
+          // Convert raw time string (e.g. "10:00:00") to "10:00 AM"
+          function fmtTime(t) {
+            if (!t || t.toString().toUpperCase() === 'CLOSED') return null;
+            if (/[ap]m/i.test(t)) return t.toString().trim(); // already formatted
+            const parts = t.toString().split(':');
+            if (parts.length >= 2) {
+              let h = parseInt(parts[0], 10);
+              const m = parts[1].padStart(2, '0');
+              const ampm = h >= 12 ? 'PM' : 'AM';
+              if (h > 12) h -= 12;
+              if (h === 0) h = 12;
+              return `${h}:${m} ${ampm}`;
+            }
+            return t;
+          }
+
+          const openFmt  = fmtTime(open);
+          const closeFmt = fmtTime(close);
+
+          const hoursDisplay = openFmt
+            ? `${openFmt} &ndash; ${closeFmt}`
+            : `<span style="color:var(--color-secondary);letter-spacing:0.08em;font-size:0.78rem;">Closed</span>`;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${day}</td><td>${hoursDisplay}</td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="2" style="color:var(--color-secondary);font-size:0.82rem;">Hours temporarily unavailable.</td></tr>';
+      }
+    }
+
+    // ── Gallery ──────────────────────────────────────────────────
+    let galleryImages = [];
+
+    async function loadGallery() {
+      try {
+        const rows = parseCSV(await fetchText(CSV_IMAGES));
+        const imgs = rows.map(r => ({
+          url: r.url || r.URL || r.image_url || r.Image_URL || r.src || Object.values(r)[0] || '',
+          alt: r.alt || r.Alt || r.caption   || r.Caption   || 'Gertens Gallery'
+        })).filter(i => i.url);
+
+        galleryImages = imgs;
+        buildMosaic(imgs);
+        buildGalleryGrid(imgs);
+        if (imgs[0]) {
+          const el = document.getElementById('about-img-el');
+          if (el) { el.src = imgs[0].url; el.alt = imgs[0].alt; }
+        }
+      } catch (err) {
+        document.getElementById('gallery-grid').innerHTML =
+          '<p style="padding:2rem;color:rgba(240,239,235,0.3);font-size:0.82rem;">Gallery images unavailable.</p>';
+      }
+    }
+
+    function buildMosaic(imgs) {
+      const bg = document.getElementById('mosaic-bg');
+      bg.innerHTML = '';
+      for (let i = 0; i < 24; i++) {
+        const img = imgs[i % imgs.length];
+        const cell = document.createElement('div');
+        cell.className = 'mosaic-cell';
+        const im = document.createElement('img');
+        im.src = img.url; im.alt = ''; im.loading = 'lazy';
+        im.style.objectPosition = `${10+Math.floor(Math.random()*80)}% ${10+Math.floor(Math.random()*80)}%`;
+        cell.appendChild(im);
+        bg.appendChild(cell);
+      }
+    }
+
+    function buildGalleryGrid(imgs) {
+      const track = document.getElementById('gallery-grid');
+      track.innerHTML = '';
+
+      imgs.forEach((img, idx) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `
+          <img src="${img.url}" alt="${img.alt}" loading="lazy"/>
+          <div class="gallery-item-overlay">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f0efeb" stroke-width="1.2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <line x1="11" y1="8" x2="11" y2="14"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </div>`;
+        item.addEventListener('click', () => openLightbox(idx));
+        track.appendChild(item);
+      });
+
+      // ── Arrow navigation ──────────────────────────────────────
+      const prevBtn = document.getElementById('gallery-prev');
+      const nextBtn = document.getElementById('gallery-next');
+
+      function updateArrows() {
+        const atStart = track.scrollLeft <= 4;
+        const atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+        prevBtn.classList.toggle('hidden', atStart);
+        nextBtn.classList.toggle('hidden', atEnd);
+      }
+
+      // Scroll by ~80% of visible width per click
+      prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -track.clientWidth * 0.8, behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: track.clientWidth * 0.8, behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', updateArrows, { passive: true });
+      // Initial state
+      updateArrows();
+
+      observeReveal();
+    }
+
+    // ── Lightbox ─────────────────────────────────────────────────
+    let lbIdx = 0;
+    function openLightbox(i) { lbIdx = i; updateLB(); document.getElementById('lightbox').classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeLightbox()  { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; }
+    function updateLB() {
+      const img = galleryImages[lbIdx];
+      document.getElementById('lightbox-img').src = img.url;
+      document.getElementById('lightbox-img').alt = img.alt;
+      document.getElementById('lb-counter').textContent = `${lbIdx+1} / ${galleryImages.length}`;
+    }
+    document.getElementById('lb-close').onclick = closeLightbox;
+    document.getElementById('lb-prev').onclick   = () => { lbIdx=(lbIdx-1+galleryImages.length)%galleryImages.length; updateLB(); };
+    document.getElementById('lb-next').onclick   = () => { lbIdx=(lbIdx+1)%galleryImages.length; updateLB(); };
+    document.getElementById('lightbox').addEventListener('click', e => { if(e.target===document.getElementById('lightbox')) closeLightbox(); });
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key==='Escape') closeLightbox();
+      if (e.key==='ArrowLeft')  { lbIdx=(lbIdx-1+galleryImages.length)%galleryImages.length; updateLB(); }
+      if (e.key==='ArrowRight') { lbIdx=(lbIdx+1)%galleryImages.length; updateLB(); }
+    });
+
+    // ── Intersection Observer (scroll reveal) ────────────────────
+    function observeReveal() {
+      const els = document.querySelectorAll('.reveal:not(.seen)');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      els.forEach(el => { el.classList.add('seen'); obs.observe(el); });
+    }
+
+    // ── Sticky header background on scroll ───────────────────────
+    window.addEventListener('scroll', () => {
+      document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── Nav logo: fade in when hero logo scrolls out of view ──────
+    // Uses IntersectionObserver on #hero-logo-img.
+    // When the hero logo is no longer intersecting (user scrolled past it),
+    // we add .logo-visible to the nav logo, fading it in.
+    (function() {
+      const heroLogo = document.getElementById('hero-logo-img');
+      const navLogo  = document.getElementById('nav-logo-img');
+      if (!heroLogo || !navLogo) return;
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLogo.classList.remove('logo-visible'); // hero visible → hide nav logo
+          } else {
+            navLogo.classList.add('logo-visible');    // hero gone → show nav logo
+          }
+        });
+      }, { threshold: 0.1 });
+      obs.observe(heroLogo);
+    })();
+
+    // ── Hamburger / mobile menu ───────────────────────────────────
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    function openMobileMenu() {
+      hamburger.classList.add('open');
+      mobileMenu.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+    });
+    // Close on Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobileMenu();
+    });
+
+    // ── Footer year ───────────────────────────────────────────────
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // ── Init ──────────────────────────────────────────────────────
+    (async () => {
+      await Promise.allSettled([loadHome(), loadHours(), loadGallery()]);
+      observeReveal();
+    })();
+  </script>
+</body>
+</html>
