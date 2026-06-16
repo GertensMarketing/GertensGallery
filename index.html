@@ -148,9 +148,9 @@
       object-fit: cover;
       z-index: 0;
       /* Slight desaturation so the overlay text always pops */
-      filter: brightness(0.75) saturate(0.8);
+      filter: brightness(0.92) saturate(0.85);
     }
-    #hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg,rgba(124, 111, 108,0.72) 0%,rgba(23, 15, 12,0.88) 60%,rgba(124, 111, 108,0.65) 100%); z-index: 1; }
+    #hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg,rgba(124, 111, 108,0.45) 0%,rgba(23, 15, 12,0.62) 60%,rgba(124, 111, 108,0.4) 100%); z-index: 1; }
     #hero::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); background-size: 200px 200px; opacity: 0.18; z-index: 2; pointer-events: none; }
 
     .hero-content { position: relative; z-index: 3; text-align: center; padding: 0 clamp(24px, 8vw, 100px); max-width: 860px; }
