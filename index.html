@@ -666,6 +666,15 @@
           if (faviconEl) faviconEl.href = faviconUrl;
         }
 
+        // ── B8: About section background image ───────────────────
+        // Spreadsheet row 8, column B = grid[7][1] (0-indexed)
+        // Set directly from grid — never overridden by gallery images
+        const aboutImgUrl = grid[7] && grid[7][1] ? grid[7][1].trim() : '';
+        if (aboutImgUrl) {
+          const aboutEl = document.getElementById('about-img-el');
+          if (aboutEl) aboutEl.src = aboutImgUrl;
+        }
+
         // ── B9: Navigation bar logo ───────────────────────────────
         // Spreadsheet row 9, column B = grid[8][1] (0-indexed)
         const navLogoUrl = grid[8] && grid[8][1] ? grid[8][1].trim() : '';
@@ -800,10 +809,8 @@
 
         galleryImages = imgs;
         buildGalleryGrid(imgs);
-        if (imgs[0]) {
-          const el = document.getElementById('about-img-el');
-          if (el) { el.src = imgs[0].url; el.alt = imgs[0].alt; }
-        }
+        // Note: About section image is set from HomepageContent CSV B8 in loadHome()
+        // — never from gallery images, to prevent race condition overwriting it.
       } catch (err) {
         document.getElementById('gallery-grid').innerHTML =
           '<p style="padding:2rem;color:rgba(230, 226, 224,0.3);font-size:0.82rem;">Gallery images unavailable.</p>';
