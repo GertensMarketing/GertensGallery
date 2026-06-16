@@ -666,6 +666,16 @@
           if (faviconEl) faviconEl.href = faviconUrl;
         }
 
+        // ── B4: Google Maps embed URL ────────────────────────────
+        // Spreadsheet row 4, column B = grid[3][1] (0-indexed)
+        // Use the URL directly as the iframe src — assumes a proper
+        // Google Maps embed URL (Share → Embed a map → copy src)
+        const mapsUrl = grid[3] && grid[3][1] ? grid[3][1].trim() : '';
+        if (mapsUrl) {
+          const mapFrame = document.querySelector('.map-wrapper iframe');
+          if (mapFrame) mapFrame.src = mapsUrl;
+        }
+
         // ── B8: About section background image ───────────────────
         // Spreadsheet row 8, column B = grid[7][1] (0-indexed)
         // Set directly from grid — never overridden by gallery images
@@ -739,13 +749,7 @@
           const aboutImg = document.getElementById('about-img-el');
           if (aboutImg) aboutImg.src = d['About Us Background'];
         }
-        if (d['Google Maps Link']) {
-          const mapFrame = document.querySelector('.map-wrapper iframe');
-          if (mapFrame) {
-            const addr = d['Address:'] || '9715 Valley View Rd, Eden Prairie, Minnesota';
-            mapFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(addr) + '&output=embed';
-          }
-        }
+        // Map URL is set directly from grid[3][1] (B4) above — no key/value needed
         set('footer-copy',     d.footer_copy);
       } catch (err) {
         console.warn('Homepage CSV failed — defaults shown.', err);
