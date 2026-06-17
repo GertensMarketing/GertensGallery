@@ -182,9 +182,8 @@
       display: none;
     }
 
-    .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom,transparent,var(--color-bg),transparent); margin: 0 auto 2.5rem; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
-    .hero-headline { font-family: var(--font-display); font-weight: 300; font-size: clamp(1.1rem,2.5vw,1.6rem); color: var(--color-bg); opacity: 0; animation: fadeUp 1s 1.1s forwards; line-height: 1.6; max-width: 600px; margin: 0 auto 2.5rem; }
-    .hero-cta { display: inline-block; padding: 14px 44px; border: 1px solid var(--color-bg); font-family: var(--font-body); font-weight: 400; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-bg); transition: background 0.4s, color 0.4s; opacity: 0; animation: fadeUp 1s 1.3s forwards; }
+    .hero-divider { width: 1px; height: 70px; background: linear-gradient(to bottom,transparent,var(--color-bg),transparent); margin: 0 auto 3rem; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
+    .hero-cta { display: inline-block; padding: 14px 44px; border: 1px solid var(--color-bg); font-family: var(--font-body); font-weight: 400; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-bg); transition: background 0.4s, color 0.4s; opacity: 0; animation: fadeUp 1s 1.1s forwards; }
     .hero-cta:hover { background: var(--color-bg); color: var(--color-main); }
     .hero-scroll-hint { position: absolute; bottom: 2.5rem; left: 0; right: 0; width: 100%; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0; animation: fadeUp 1s 2s forwards; }
     .hero-scroll-hint span { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(230, 226, 224,0.45); }
@@ -457,7 +456,6 @@
       <h1 id="hero-logo-fallback">Gertens Gallery</h1>
 
       <div class="hero-divider"></div>
-      <p class="hero-headline" id="hero-headline">A curated showroom experience for pavers, natural stone, porcelain, and hardscape artistry — now open to design professionals and homeowners alike.</p>
       <a href="#booking" class="hero-cta">Book Your Private Visit</a>
     </div>
     <div class="hero-scroll-hint">
@@ -728,7 +726,6 @@
         if (d['Address:'])              set('location-address', d['Address:']);
         if (d['About Us'])              setH('about-body', d['About Us'].replace(/\n/g, '<br><br>'));
         if (d['Top SubHeader'])         set('hero-eyebrow',  d['Top SubHeader']);
-        if (d['Top Headline'])          set('hero-headline', d['Top Headline']);
 
         // Images — override hardcoded src only if CSV value differs
         if (d['Navigation logo']) {
