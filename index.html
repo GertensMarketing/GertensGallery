@@ -154,6 +154,50 @@
     #hero::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); background-size: 200px 200px; opacity: 0.18; z-index: 2; pointer-events: none; }
 
     .hero-content { position: relative; z-index: 3; text-align: center; padding: 0 clamp(24px, 8vw, 100px); max-width: 860px; }
+
+    /* Announcement bar — dismissible, pulled from CSV B13 */
+    .announcement-bar {
+      display: none; /* shown by JS only if CSV B13 has content */
+      align-items: center;
+      gap: 14px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      padding: 12px 16px 12px 20px;
+      margin: 0 auto 2.2rem;
+      max-width: min(92%, 640px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .announcement-bar.show { display: inline-flex; }
+    .announcement-bar.show.visible { opacity: 1; transform: translateY(0); }
+    .announcement-text {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: clamp(0.78rem, 1.6vw, 0.92rem);
+      color: #1a1a1a;
+      line-height: 1.45;
+      text-align: left;
+    }
+    .announcement-close {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: none;
+      color: #1a1a1a;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.55;
+      transition: opacity 0.25s;
+    }
+    .announcement-close:hover { opacity: 1; }
     .hero-eyebrow { font-family: var(--font-body); font-weight: 300; font-size: 0.68rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--color-bg); margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 1s 0.3s forwards; }
 
     /*
@@ -443,6 +487,12 @@
       aria-hidden="true"
     ></video>
     <div class="hero-content">
+      <!-- Announcement bar: text from CSV B13, dismissible with the X -->
+      <div class="announcement-bar" id="announcement-bar">
+        <span class="announcement-text" id="announcement-text"></span>
+        <button class="announcement-close" id="announcement-close" aria-label="Close announcement">&#10005;</button>
+      </div>
+
       <p class="hero-eyebrow" id="hero-eyebrow">Now Open in Eden Prairie</p>
 
       <!--
@@ -705,6 +755,22 @@
           }
         }
 
+        // ── B13: Announcement bar ──────────────────────────────────
+        // Spreadsheet row 13, column B = grid[12][1] (0-indexed)
+        const announcementText = grid[12] && grid[12][1] ? grid[12][1].trim() : '';
+        if (announcementText) {
+          const bar    = document.getElementById('announcement-bar');
+          const textEl = document.getElementById('announcement-text');
+          if (bar && textEl) {
+            textEl.textContent = announcementText;
+            bar.classList.add('show');
+            // Wait a frame so the transition actually animates in
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => bar.classList.add('visible'));
+            });
+          }
+        }
+
 
         // ── Parse CSV using correct column names: "Website Section" / "Info or Link" ──
         // Build a lookup: { "Address:": "9715 Valley View...", "Logo": "https://..." }
@@ -919,6 +985,16 @@
       }, { threshold: 0.1 });
       obs.observe(heroLogo);
     })();
+
+    // ── Announcement bar close button ─────────────────────────────
+    const announcementCloseBtn = document.getElementById('announcement-close');
+    if (announcementCloseBtn) {
+      announcementCloseBtn.addEventListener('click', () => {
+        const bar = document.getElementById('announcement-bar');
+        bar.classList.remove('visible');
+        setTimeout(() => bar.classList.remove('show'), 550); // matches CSS transition duration
+      });
+    }
 
     // ── Hamburger / mobile menu ───────────────────────────────────
     const hamburger  = document.getElementById('hamburger');
