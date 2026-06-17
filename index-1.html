@@ -1,1017 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gertens Gallery | Minnesota's Hardscape Showroom</title>
-    <link id="dynamic-favicon" rel="icon" href="data:,">
-    
-    <!-- Google Fonts for Elegant Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gertens Gallery — Launching Soon</title>
 
-    <style>
-        /* --- Strict Color Palette & Variables --- */
-        :root {
-            --primary: #4a6275;      /* Slate Blue - Used as Dark Background */
-            --bg: #f0efeb;           /* Off-white - Used for Primary Text */
-            --text-sec: #756f6a;     /* Warm Grey - Used for dark subtle text */
-            --accent: #d6cd95;       /* Warm Gold */
-            --highlight: #79b6d8;    /* Light Blue - Used for Secondary Text/Links */
-            
-            --font-heading: 'Inter', sans-serif; /* Swapped to Inter for RR feel */
-            --font-serif: 'Playfair Display', serif;
-            --font-body: 'Inter', sans-serif;
-            
-            --spacing-section: 8rem;
-            --container-width: 1400px;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
 
-        /* --- Global Reset & Base Styles --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <style>
+    :root {
+      --color-main:      #7c6f6c;   /* Primary gray-taupe (matches live site bg) */
+      --color-bg:         #e6e2e0;  /* Light linen — used for text on dark */
+      --color-secondary:  #cfc9c7;  /* Lighter neutral for the eyebrow label */
+      --color-accent:     #e6e2e0;  /* Light linen accent for the divider */
+      --color-deep:        #170f0c; /* Near-black */
 
-        html {
-            scroll-behavior: smooth;
-        }
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Jost', sans-serif;
+    }
 
-        body {
-            /* Inverted to dark theme using your palette */
-            background-color: var(--primary);
-            color: var(--bg);
-            font-family: var(--font-body);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
+    * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
 
-        h1, h2, h3, h4 {
-            font-family: var(--font-heading);
-            font-weight: 300;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            line-height: 1.3;
-        }
-        
-        a {
-            color: var(--bg);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        a:hover {
-            color: var(--highlight);
-        }
+    body {
+      background-color: var(--color-main);
+      color: var(--color-bg);
+      font-family: var(--font-body);
+      font-weight: 300;
+      overflow: hidden;
+    }
 
-        .container {
-            max-width: var(--container-width);
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-        }
+    img { display: block; max-width: 100%; }
 
-        .section {
-            padding: var(--spacing-section) 0;
-            position: relative;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* Page wrapper with brand gradient + subtle noise, echoing the main site's hero treatment */
+    #stage {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-        /* --- High-End Reveal Animations --- */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+    #stage::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 90% at 50% 30%, rgba(124,111,108,0.35) 0%, rgba(23,15,12,0.55) 65%, rgba(23,15,12,0.75) 100%);
+      z-index: 1;
+    }
 
-        .in-view.fade-up, .in-view .fade-up {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    #stage::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      opacity: 0.2;
+      z-index: 2;
+      pointer-events: none;
+    }
 
-        .delay-1 { transition-delay: 0.1s; }
-        .delay-2 { transition-delay: 0.2s; }
-        .delay-3 { transition-delay: 0.3s; }
+    .content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      padding: 0 clamp(24px, 8vw, 100px);
+      max-width: 640px;
+    }
 
-        /* --- Transparent Top Navigation --- */
-        .top-nav {
-            position: fixed; /* Changed from absolute to fixed */
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1.5rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            border-bottom: 1px solid rgba(240, 239, 235, 0.2);
-            transition: background-color 0.4s ease, backdrop-filter 0.4s ease, border-bottom-color 0.4s ease, padding 0.4s ease;
-        }
+    #logo-img {
+      max-width: clamp(200px, 40vw, 380px);
+      max-height: 180px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin: 0 auto 2.75rem;
+      display: block;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
 
-        /* Scrolled state for the fixed navigation */
-        .top-nav.scrolled {
-            background-color: rgba(35, 45, 55, 0.85); /* Dark gray, slightly see-through */
-            backdrop-filter: blur(12px); /* Frosted glass effect */
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom-color: transparent;
-            padding: 1rem 3rem; /* Shrinks slightly on scroll for elegance */
-        }
+    #logo-fallback {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-bg);
+      line-height: 1;
+      margin: 0 auto 2.75rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+      display: none; /* shown only if image fails */
+    }
 
-        .nav-item {
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            color: var(--bg);
-            transition: color 0.3s;
-        }
+    .divider {
+      width: 1px;
+      height: 48px;
+      margin: 0 auto 2rem;
+      background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+      opacity: 0;
+      animation: fadeUp 1s 0.6s forwards;
+    }
 
-        .nav-item:hover {
-            color: var(--accent);
-        }
+    .headline {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+      letter-spacing: 0.02em;
+      color: var(--color-bg);
+      opacity: 0;
+      animation: fadeUp 1s 0.85s forwards;
+    }
 
-        .nav-icon {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
+    .eyebrow {
+      margin-top: 1.6rem;
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 0.68rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
+      opacity: 0;
+      animation: fadeUp 1s 1.1s forwards;
+    }
 
-        /* Initial centered state for the appointment button */
-        .nav-item.appt-item {
-            position: absolute;
-            right: 50%;
-            transform: translateX(50%);
-            transition: right 0.4s ease, transform 0.4s ease, color 0.3s;
-            white-space: nowrap;
-        }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-        /* Scrolled state moves the appointment button to the right edge */
-        .top-nav.scrolled .nav-item.appt-item {
-            right: 3rem;
-            transform: translateX(0);
-        }
-
-        .appt-text-short {
-            display: none;
-        }
-
-        .nav-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0; /* Hidden when at the top */
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-
-        /* Fades the logo in when the nav becomes sticky/dark */
-        .top-nav.scrolled .nav-center {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .nav-center svg {
-            height: 100%;
-            width: auto;
-            fill: var(--bg);
-        }
-        
-        @media (max-width: 768px) {
-            .top-nav { padding: 1.2rem 1rem; } /* Pulled closer to edges to save space */
-            .top-nav.scrolled { padding: 0.8rem 1rem; }
-            .nav-item { font-size: 0.65rem; } /* Smaller font on small screens */
-            .nav-item.menu-item span { display: none; } /* Hide only Menu text on mobile */
-            .nav-center { height: 30px; } /* Slightly scale down logo on mobile */
-            
-            /* Swap to shorter text and adjust right-padding on mobile */
-            .appt-text-full { display: none; }
-            .appt-text-short { display: inline; }
-            .nav-item.appt-item { gap: 0.15rem; } /* Shrinks the space between the arrow and text */
-            .top-nav.scrolled .nav-item.appt-item { right: 1rem; }
-        }
-
-        /* --- Cinematic Hero Section --- */
-        .hero {
-            position: relative;
-            height: 100vh;
-            min-height: 600px;
-            background-color: var(--primary); /* Fallback */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: var(--bg);
-            transition: background-image 1s ease;
-        }
-
-        /* Dark overlay to make text pop over the image */
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(74, 98, 117, 0.3) 0%, rgba(74, 98, 117, 0.7) 100%);
-            z-index: 1;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1000px;
-            padding: 0 2rem;
-            margin-top: 5rem; /* Offset for nav */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .hero-main-logo {
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .hero-main-logo img, .hero-main-logo svg {
-            max-height: 250px;
-            max-width: 80vw;
-            object-fit: contain;
-            fill: var(--bg);
-        }
-
-        .hero h1 {
-            font-size: clamp(1.8rem, 4vw, 3.5rem);
-            margin-bottom: 1.5rem;
-            font-weight: 400;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .hero p {
-            font-family: var(--font-serif);
-            font-style: italic;
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: var(--accent);
-            letter-spacing: 0.05em;
-        }
-
-        /* --- Explore Further (Gallery) Section --- */
-        .explore-section {
-            background-color: var(--primary);
-            border-bottom: 1px solid rgba(240, 239, 235, 0.1);
-        }
-        
-        .section-header h2 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .section-header p {
-            font-family: var(--font-serif);
-            font-style: italic;
-            color: var(--highlight);
-        }
-
-        /* --- About Section Styles --- */
-        .about-section {
-            position: relative;
-            background-color: var(--primary);
-            border-bottom: 1px solid rgba(240, 239, 235, 0.1);
-        }
-
-        .about-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: var(--about-bg, none);
-            background-size: cover;
-            background-position: center;
-            opacity: 0.2;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .elegant-bold-text {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .elegant-bold-text p {
-            font-family: var(--font-serif);
-            font-size: clamp(1rem, 2vw, 1.4rem);
-            font-weight: 500;
-            line-height: 1.8;
-            color: var(--bg);
-            margin-bottom: 1.5rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Enhances readability over the image */
-        }
-
-        /* --- Sliding Gallery Styles --- */
-        .slider-wrapper {
-            position: relative;
-            width: 100%;
-            margin-top: 2rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .slider-viewport {
-            width: 100%;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-
-        /* Hide native scrollbar for a clean luxury look */
-        .slider-viewport::-webkit-scrollbar {
-            display: none;
-        }
-
-        .slider-track {
-            display: flex;
-            gap: 2rem;
-            padding: 1rem 0;
-        }
-
-        .explore-item {
-            flex: 0 0 45%; /* Shows ~2 cards at a time on desktop */
-            scroll-snap-align: center;
-            cursor: pointer;
-        }
-
-        .slider-btn {
-            position: absolute;
-            top: 40%;
-            transform: translateY(-50%);
-            background: rgba(74, 98, 117, 0.85); /* Slightly transparent primary color */
-            border: 1px solid rgba(240, 239, 235, 0.2);
-            color: var(--bg);
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: background 0.3s, color 0.3s, transform 0.3s;
-            backdrop-filter: blur(8px);
-        }
-
-        .slider-btn:hover {
-            background: var(--bg);
-            color: var(--primary);
-            transform: translateY(-50%) scale(1.05);
-        }
-
-        /* Position the arrows outside or hugging the edges */
-        .slider-btn.prev { left: -1.5rem; }
-        .slider-btn.next { right: -1.5rem; }
-
-        @media (max-width: 1500px) {
-            .slider-btn.prev { left: 1rem; }
-            .slider-btn.next { right: 1rem; }
-        }
-
-        .explore-img-wrapper {
-            width: 100%;
-            aspect-ratio: 16 / 10;
-            overflow: hidden;
-            background-color: rgba(240, 239, 235, 0.05);
-            margin-bottom: 1.5rem;
-        }
-
-        .explore-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
-            filter: grayscale(20%) brightness(0.85);
-        }
-
-        .explore-item:hover .explore-img-wrapper img {
-            transform: scale(1.03);
-            filter: grayscale(0%) brightness(1);
-        }
-
-        .explore-text h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            color: var(--bg);
-        }
-
-        .explore-text p {
-            font-size: 0.9rem;
-            color: var(--highlight);
-            line-height: 1.5;
-            font-weight: 300;
-        }
-
-        @media (max-width: 900px) {
-            .explore-item { flex: 0 0 85%; } /* Shows 1 card prominently on mobile */
-            .explore-img-wrapper { aspect-ratio: 4 / 3; }
-        }
-
-        /* --- Info & About Section (RR Style) --- */
-        .info-section {
-            text-align: center;
-            width: 100%;
-        }
-        
-        .info-section .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .info-section p {
-            font-size: 1.1rem;
-            color: var(--highlight);
-            margin-bottom: 2rem;
-            font-weight: 300;
-        }
-        
-        .hours-table {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto 4rem auto;
-            border-collapse: collapse;
-        }
-
-        .hours-table td {
-            padding: 1rem 0;
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(240, 239, 235, 0.1);
-            color: var(--bg);
-        }
-
-        .hours-table td:last-child {
-            text-align: right;
-            color: var(--accent);
-        }
-
-        .map-container {
-            width: 100%;
-            height: 450px;
-            filter: grayscale(100%) invert(90%) contrast(80%) hue-rotate(180deg);
-            opacity: 0.8;
-            transition: opacity 0.5s ease;
-        }
-        
-        .map-container:hover {
-            opacity: 1;
-        }
-
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        /* --- Appointment Section --- */
-        .appointment-section {
-            text-align: center;
-            border-top: 1px solid rgba(240, 239, 235, 0.1);
-        }
-
-        .calendly-placeholder {
-            max-width: 900px;
-            margin: 0 auto;
-            border: 1px solid rgba(240, 239, 235, 0.2);
-            padding: 6rem 2rem;
-            color: var(--highlight);
-            font-family: var(--font-serif);
-            font-style: italic;
-        }
-
-        /* --- Minimal Footer --- */
-        footer {
-            padding: 4rem 0;
-            text-align: center;
-            border-top: 1px solid rgba(240, 239, 235, 0.1);
-        }
-
-        .footer-logo-container {
-            margin-bottom: 3rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .footer-logo-container img, .footer-logo-container svg {
-            max-width: 200px;
-            max-height: 50px;
-            fill: var(--bg);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
-
-        .footer-links a {
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--highlight);
-        }
-
-        .footer-text {
-            color: rgba(240, 239, 235, 0.4);
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-
-        /* --- Lightbox (Remains mostly unchanged but stylized darker) --- */
-        .lightbox {
-            position: fixed;
-            inset: 0;
-            /* Extra dark variant of your primary color for maximum contrast */
-            background-color: rgba(30, 40, 50, 0.98); 
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        .lightbox.active { opacity: 1; pointer-events: auto; }
-        .lightbox-content { position: relative; width: 95%; max-width: 1400px; height: 90vh; display: flex; align-items: center; justify-content: center; }
-        .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.98); transition: transform 0.5s ease; }
-        .lightbox.active .lightbox-img { transform: scale(1); }
-        .lightbox-close, .lightbox-nav { position: absolute; background: none; border: none; color: var(--bg); cursor: pointer; transition: color 0.3s; z-index: 2; display: flex; align-items: center; justify-content: center; }
-        .lightbox-close { top: -1rem; right: 0; font-size: 3rem; font-weight: 300; }
-        .lightbox-nav { top: 50%; transform: translateY(-50%); width: 60px; height: 60px; }
-        .lightbox-nav:hover, .lightbox-close:hover { color: var(--accent); }
-        .lightbox-prev { left: -1rem; }
-        .lightbox-next { right: -1rem; }
-    </style>
+    @media (prefers-reduced-motion: reduce) {
+      #logo-img, #logo-fallback, .divider, .headline, .eyebrow {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Transparent Top Navigation -->
-    <nav class="top-nav">
-        <div class="nav-item menu-item">
-            <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-            <span>Menu</span>
-        </div>
-        
-        <div class="nav-center" id="nav-logo-container">
-            <!-- Fallback text/SVG logo if CSV empty -->
-            <svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-                <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="32" font-weight="300" letter-spacing="8">GERTENS GALLERY</text>
-            </svg>
-        </div>
-        
-        <a href="#appointment" class="nav-item appt-item">
-            <svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
-            <span class="appt-text-full">Make an Appointment</span>
-            <span class="appt-text-short">Appointments</span>
-        </a>
-    </nav>
+  <div id="stage">
+    <div class="content">
+      <img
+        id="logo-img"
+        src="https://gertensgallery.netlify.app/images/GertensGallery_white.png"
+        alt="Gertens Gallery"
+        onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';"
+      />
+      <div id="logo-fallback">Gertens<br />Gallery</div>
 
-    <!-- Cinematic Hero Section -->
-    <header class="hero" id="hero-section">
-        <div class="hero-content fade-up">
-            <div id="hero-center-logo-container" class="hero-main-logo">
-                <!-- Fallback text/SVG logo if CSV empty -->
-                <svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-                    <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="36" font-weight="300" letter-spacing="8">GERTENS GALLERY</text>
-                </svg>
-            </div>
-            <h1 id="hero-headline">[Headline Loading]</h1>
-        </div>
-    </header>
+      <div class="divider"></div>
 
-    <!-- About Section (Moved Above Gallery) -->
-    <section class="section about-section fade-up" id="about-section">
-        <div class="container" style="position: relative; z-index: 1;">
-            <div class="section-header">
-                <h2 id="about-title">EXPERIENCE THE GALLERY</h2>
-            </div>
-            <div id="about-text" class="elegant-bold-text">
-                <p>Loading gallery details...</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Explore Further (Gallery) -->
-    <section class="section explore-section">
-        <div class="container">
-            <div class="section-header fade-up">
-                <h2>Take a Look Inside the Gallery</h2>
-            </div>
-            
-            <div class="slider-wrapper fade-up delay-1">
-                <button class="slider-btn prev" id="slider-prev">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                
-                <div class="slider-viewport" id="slider-viewport">
-                    <div class="slider-track" id="gallery-track">
-                        <!-- Sliding gallery cards injected here -->
-                    </div>
-                </div>
-                
-                <button class="slider-btn next" id="slider-next">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Book Appointment Section -->
-    <section class="section appointment-section" id="appointment">
-        <div class="container">
-            <div class="section-header fade-up">
-                <h2>Schedule your Appointment</h2>
-                <p>Book time with our landscape and hardscape design experts.</p>
-            </div>
-            <div class="calendly-placeholder fade-up delay-1">
-                <p>[ Calendly Booking Widget Embed Location ]</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Visit Us Section -->
-    <section class="section info-section fade-up" style="border-top: 1px solid rgba(240, 239, 235, 0.1); padding-top: 4rem; padding-bottom: 0;">
-        <div class="container">
-            <div class="section-header" style="margin-bottom: 0;">
-                <h2 style="font-size: 1.2rem; margin-bottom: 2rem;">Visit Us</h2>
-            </div>
-            <table class="hours-table" id="hours-table">
-                <!-- Hours injected here -->
-            </table>
-        </div>
-        
-        <div class="map-container fade-up delay-1">
-            <iframe id="location-map" src="https://maps.google.com/maps?q=5500+Blaine+Ave,+Inver+Grove+Heights,+MN+55076&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container fade-up">
-            <div class="footer-logo-container" id="footer-logo-container">
-                <svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="28" font-weight="300" letter-spacing="8">GERTENS GALLERY</text>
-                </svg>
-            </div>
-            <div class="footer-links">
-                <a href="#">Contact</a>
-                <a href="#appointment">Appointments</a>
-            </div>
-            <p class="footer-text">&copy; <span id="current-year"></span> Gertens Gallery. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Lightbox Overlay -->
-    <div id="lightbox" class="lightbox">
-        <div class="lightbox-content">
-            <button id="lightbox-close" class="lightbox-close">&times;</button>
-            <button id="lightbox-prev" class="lightbox-nav lightbox-prev">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            </button>
-            <img id="lightbox-img" class="lightbox-img" src="" alt="Gallery View" referrerpolicy="no-referrer">
-            <button id="lightbox-next" class="lightbox-nav lightbox-next">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </button>
-        </div>
+      <p class="headline">Website launching soon.</p>
+      <p class="eyebrow">Gertens Gallery</p>
     </div>
+  </div>
 
-    <!-- Core Logic & Animations -->
-    <script>
-        const CSV_URLS = {
-            content: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=0&single=true&output=csv",
-            hours: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=1768246174&single=true&output=csv",
-            images: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTsNWXDZnKiyRWykKyDdMs0Tj7_ED9U0EsO4rZUBRlXJX7JTb44icxRo9953epyiIh_bdkT3rufKDaX/pub?gid=1576387379&single=true&output=csv"
-        };
-
-        let galleryImagesList = [];
-        let currentLightboxIndex = 0;
-
-        // Drive URL converter
-        function getDirectImageUrl(url) {
-            if (!url) return '';
-            const match = url.match(/\/d\/(.*?)\//) || url.match(/id=(.*?)(&|$)/);
-            if (url.includes('drive.google.com') && match && match[1]) {
-                return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-            }
-            return url.trim();
-        }
-
-        function parseCSV(str) {
-            const arr = [];
-            let quote = false;
-            let row = 0, col = 0;
-            for (let c = 0; c < str.length; c++) {
-                let cc = str[c], nc = str[c+1];
-                arr[row] = arr[row] || [];
-                arr[row][col] = arr[row][col] || '';
-                if (cc === '"' && quote && nc === '"') { arr[row][col] += cc; ++c; continue; }
-                if (cc === '"') { quote = !quote; continue; }
-                if (cc === ',' && !quote) { ++col; continue; }
-                if (cc === '\r' && nc === '\n' && !quote) { ++row; col = 0; ++c; continue; }
-                if (cc === '\n' && !quote) { ++row; col = 0; continue; }
-                if (cc === '\r' && !quote) { ++row; col = 0; continue; }
-                arr[row][col] += cc;
-            }
-            return arr;
-        }
-
-        async function fetchAndPopulate() {
-            // 1. Content
-            try {
-                const contentRes = await fetch(CSV_URLS.content);
-                const contentData = parseCSV(await contentRes.text());
-                const dict = {};
-                contentData.forEach(row => {
-                    if (row.length >= 2 && row[0]) dict[row[0].trim().toLowerCase()] = row[1].trim();
-                });
-
-                document.getElementById('hero-headline').textContent = dict['headline'] || dict['title'] || 'NOW TAKING APPOINTMENTS';
-                
-                let aboutTitleRaw = dict['about title'] || dict['abouttitle'];
-                if(aboutTitleRaw) document.getElementById('about-title').textContent = aboutTitleRaw;
-                
-                let aboutTextRaw = dict['about text'] || dict['abouttext'] || dict['about'] || dict['description'];
-                
-                // Bulletproof Fallback: Find the longest paragraph in Column B 
-                // (The 'About' text is usually the longest string in the CSV)
-                if (!aboutTextRaw) {
-                    let longestText = "";
-                    contentData.forEach(row => {
-                        if (row && row.length >= 2 && row[1]) {
-                            const cellText = row[1].trim();
-                            // Ensure it's not a URL and is the longest text found
-                            if (cellText.length > longestText.length && !cellText.startsWith('http')) {
-                                longestText = cellText;
-                            }
-                        }
-                    });
-                    if (longestText.length > 30) {
-                        aboutTextRaw = longestText;
-                    }
-                }
-
-                // Apply the text
-                if (aboutTextRaw) {
-                    document.getElementById('about-text').innerHTML = aboutTextRaw.split('\n')
-                        .filter(p => p.trim() !== '')
-                        .map(p => `<p>${p}</p>`).join('');
-                } else {
-                    document.getElementById('about-text').innerHTML = '<p>Discover premium materials and exceptional design.</p>';
-                }
-
-                // Apply the About Background Image (Pulls from Cell B8 or Key Match)
-                let aboutBgUrlRaw = '';
-                const bgKey = Object.keys(dict).find(k => k.includes('background'));
-                if (bgKey && dict[bgKey]) {
-                    aboutBgUrlRaw = dict[bgKey];
-                } else if (contentData.length >= 8 && contentData[7][1] && contentData[7][1].startsWith('http')) {
-                    aboutBgUrlRaw = contentData[7][1]; // Cell B8 explicit fallback
-                }
-
-                if (aboutBgUrlRaw) {
-                    const bgUrl = getDirectImageUrl(aboutBgUrlRaw);
-                    document.getElementById('about-section').style.setProperty('--about-bg', `url('${bgUrl}')`);
-                }
-
-                // Apply Main Logo
-                let primaryLogoRaw = '';
-                const primaryLogoKey = Object.keys(dict).find(k => k === 'logo' || (k.includes('logo') && !k.includes('scroll') && !k.includes('nav')));
-                if (primaryLogoKey && dict[primaryLogoKey]) {
-                    primaryLogoRaw = dict[primaryLogoKey];
-                }
-                
-                if (primaryLogoRaw) {
-                    const logoUrl = getDirectImageUrl(primaryLogoRaw);
-                    const logoHtmlLarge = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 250px; max-width: 80vw; object-fit: contain;">`;
-                    const logoHtmlFooter = `<img src="${logoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 50px; object-fit: contain;">`;
-                    
-                    const heroLogoContainer = document.getElementById('hero-center-logo-container');
-                    if(heroLogoContainer) heroLogoContainer.innerHTML = logoHtmlLarge;
-                    document.getElementById('footer-logo-container').innerHTML = logoHtmlFooter;
-                }
-
-                // Apply Nav/Scroll Logo (Strictly pulls from Cell B9)
-                let scrollLogoRaw = '';
-                if (contentData.length >= 9 && contentData[8][1] && contentData[8][1].trim() !== '') {
-                    scrollLogoRaw = contentData[8][1].trim(); // Cell B9 explicitly
-                } else {
-                    scrollLogoRaw = primaryLogoRaw; // Fallback to main logo if missing
-                }
-
-                if (scrollLogoRaw) {
-                    const scrollLogoUrl = getDirectImageUrl(scrollLogoRaw);
-                    const logoHtmlSmall = `<img src="${scrollLogoUrl}" alt="Logo" referrerpolicy="no-referrer" style="max-height: 35px; object-fit: contain;">`;
-                    document.getElementById('nav-logo-container').innerHTML = logoHtmlSmall;
-                }
-
-                // Apply Favicon (Pulls from Cell B7 or Key Match)
-                let faviconUrlRaw = '';
-                const faviconKey = Object.keys(dict).find(k => k.includes('favicon'));
-                if (faviconKey && dict[faviconKey]) {
-                    faviconUrlRaw = dict[faviconKey];
-                } else if (contentData.length >= 7 && contentData[6][1] && contentData[6][1].startsWith('http')) {
-                    faviconUrlRaw = contentData[6][1]; // Cell B7 explicit fallback
-                }
-
-                if (faviconUrlRaw) {
-                    const faviconUrl = getDirectImageUrl(faviconUrlRaw);
-                    document.getElementById('dynamic-favicon').href = faviconUrl;
-                }
-
-                // Apply Address to Map (Pulls from Cell B3 or Key Match)
-                let addressRaw = dict['address'] || dict['location'];
-                if (!addressRaw && contentData.length >= 3 && contentData[2][1]) {
-                    addressRaw = contentData[2][1]; // Cell B3 explicit fallback
-                }
-
-                if (addressRaw) {
-                    const mapIframe = document.getElementById('location-map');
-                    if (mapIframe) {
-                        mapIframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(addressRaw)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
-                    }
-                }
-
-            } catch (err) { console.error("Content error:", err); }
-
-            // 2. Hours
-            try {
-                const hoursRes = await fetch(CSV_URLS.hours);
-                const hoursData = parseCSV(await hoursRes.text());
-                let hoursHTML = '';
-                hoursData.forEach((row, i) => {
-                    if (i === 0 && row[0].toLowerCase().includes('day')) return; 
-                    if (row.length >= 2 && row[0].trim() !== '') {
-                        let timeString = row[1];
-                        // If there is a closing time in the third column, append it with a dash
-                        if (row.length >= 3 && row[2] && row[2].trim() !== '' && row[1].toLowerCase() !== 'closed') {
-                            timeString += ` - ${row[2]}`;
-                        }
-                        hoursHTML += `<tr><td>${row[0]}</td><td>${timeString}</td></tr>`;
-                    }
-                });
-                document.getElementById('hours-table').innerHTML = hoursHTML || '<tr><td>Check back soon for hours.</td></tr>';
-            } catch (err) { console.error("Hours error:", err); }
-
-            // 3. Images
-            try {
-                const imagesRes = await fetch(CSV_URLS.images);
-                const imagesData = parseCSV(await imagesRes.text());
-                const trackEl = document.getElementById('gallery-track');
-                
-                imagesData.forEach((row, i) => {
-                    if (i === 0) return; // Skip header
-                    const imgAlt = row[0] ? row[0].trim() : ''; // Column A 
-                    const rawUrl = row[1] ? row[1].trim() : ''; // Column B 
-                    if (rawUrl) {
-                        const imgUrl = getDirectImageUrl(rawUrl);
-                        galleryImagesList.push(imgUrl);
-                        
-                        // RR Style Card Injection into Slider Track
-                        const div = document.createElement('div');
-                        div.className = 'explore-item';
-                        div.onclick = () => openLightbox(galleryImagesList.length - 1);
-                        div.innerHTML = `
-                            <div class="explore-img-wrapper">
-                                <img src="${imgUrl}" alt="${imgAlt}" loading="lazy" referrerpolicy="no-referrer">
-                            </div>
-                            <div class="explore-text">
-                                <h3>${imgAlt || 'Gallery View'}</h3>
-                                <p>Discover premium materials and exceptional design.</p>
-                            </div>
-                        `;
-                        trackEl.appendChild(div);
-                    }
-                });
-
-                // Set Hero Background dynamically to the first image from CSV
-                if (galleryImagesList.length > 0) {
-                    document.getElementById('hero-section').style.backgroundImage = `url('${galleryImagesList[0]}')`;
-                }
-
-            } catch (err) { console.error("Images error:", err); }
-        }
-
-        // --- Scroll Animations ---
-        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('in-view');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // --- Nav Scroll Logic ---
-        const topNav = document.querySelector('.top-nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                topNav.classList.add('scrolled');
-            } else {
-                topNav.classList.remove('scrolled');
-            }
-        });
-
-        // --- Slider Navigation Logic ---
-        const sliderViewport = document.getElementById('slider-viewport');
-        document.getElementById('slider-prev').addEventListener('click', () => {
-            const itemElement = sliderViewport.querySelector('.explore-item');
-            if (itemElement) {
-                const itemWidth = itemElement.clientWidth + 32; // width + gap
-                sliderViewport.scrollBy({ left: -itemWidth, behavior: 'smooth' });
-            }
-        });
-        document.getElementById('slider-next').addEventListener('click', () => {
-            const itemElement = sliderViewport.querySelector('.explore-item');
-            if (itemElement) {
-                const itemWidth = itemElement.clientWidth + 32; 
-                sliderViewport.scrollBy({ left: itemWidth, behavior: 'smooth' });
-            }
-        });
-
-        // --- Lightbox ---
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        
-        function openLightbox(i) {
-            currentLightboxIndex = i;
-            lightboxImg.src = galleryImagesList[currentLightboxIndex];
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeLightbox() {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function navigate(dir) {
-            currentLightboxIndex = (currentLightboxIndex + dir + galleryImagesList.length) % galleryImagesList.length;
-            lightboxImg.style.opacity = '0';
-            setTimeout(() => {
-                lightboxImg.src = galleryImagesList[currentLightboxIndex];
-                lightboxImg.style.opacity = '1';
-            }, 200);
-        }
-
-        document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-        document.getElementById('lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
-        document.getElementById('lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
-        lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.classList.contains('lightbox-content')) closeLightbox(); });
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') navigate(1);
-            if (e.key === 'ArrowLeft') navigate(-1);
-        });
-
-        // --- Init ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Dynamically set the copyright year to the current US year
-            const usYear = new Date().toLocaleString("en-US", { timeZone: "America/Chicago", year: "numeric" });
-            document.getElementById('current-year').textContent = usYear;
-
-            fetchAndPopulate();
-            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-            
-            // Trigger hero animation immediately
-            setTimeout(() => {
-                document.querySelector('.hero .fade-up').classList.add('in-view');
-            }, 100);
-        });
-    </script>
 </body>
 </html>
